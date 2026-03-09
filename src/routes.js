@@ -1,0 +1,43 @@
+import { createBrowserRouter } from "react-router";
+import { LoginPage } from "./app/pages/LoginPage";
+import { OnboardingPage } from "./app/pages/OnboardingPage";
+import { MainMapPage } from "./app/pages/MainMapPage";
+import { SpotsListPage } from "./app/pages/SpotsListPage";
+import { SpotDetailPage } from "./app/pages/SpotDetailPage";
+import { CommunityPage } from "./app/pages/CommunityPage";
+import { ProfilePage } from "./app/pages/ProfilePage";
+import { ChatPage } from "./app/pages/ChatPage";
+import { UploadPage } from "./app/pages/UploadPage";
+import { PostDetailPage } from "./app/pages/PostDetailPage";
+import { MeetupDetailPage } from "./app/pages/MeetupDetailPage";
+import { SettingsPage } from "./app/pages/SettingsPage";
+import { MyPhotosPage } from "./app/pages/MyPhotosPage";
+import { MyMeetupsPage } from "./app/pages/MyMeeupsPage";
+import { EditProfilePage } from "./app/pages/EditProfilePage";
+import { ManageMeetupPage } from "./app/pages/ManageMeetupPage";
+import { MeetupsPage } from "./app/pages/MeetupsPage";
+import { FriendsPage } from "./app/pages/FriendsPage";
+
+export const router = createBrowserRouter([
+  { path: "/", Component: LoginPage },
+  { path: "/onboarding", Component: OnboardingPage },
+  { path: "/main", Component: MainMapPage },
+  { path: "/spots", Component: SpotsListPage },
+  { path: "/spot/:id", Component: SpotDetailPage },
+  { path: "/community", Component: CommunityPage },
+  { path: "/post/:id", Component: PostDetailPage },
+  { path: "/meetup/:id", Component: MeetupDetailPage },
+  { path: "/profile", Component: ProfilePage },
+  { path: "/chat", Component: ChatPage },
+  { path: "/chat/:id", Component: ChatPage },
+  { path: "/upload", Component: UploadPage },
+  { path: "/bookmarks", Component: SpotsListPage },
+  { path: "/visited", Component: SpotsListPage },
+  { path: "/settings", Component: SettingsPage },
+  { path: "/my-photos", Component: MyPhotosPage },
+  { path: "/my-meetups", Component: MyMeetupsPage },
+  { path: "/profile/edit", Component: EditProfilePage },
+  { path: "/meetup/:id/manage", Component: ManageMeetupPage },
+  { path: "/meetups", Component: MeetupsPage },
+  { path: "/friends", Component: FriendsPage },
+]);
