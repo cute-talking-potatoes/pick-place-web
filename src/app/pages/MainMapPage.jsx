@@ -22,6 +22,7 @@ function MainMapPage() {
   const [showFilters, setShowFilters] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const spot = selectedSpot ? mockSpots.find((s) => s.id === selectedSpot) : null;
+  const locationRecommendedSpots = mockSpots.slice(0, 3);
   return <div className="h-screen flex flex-col bg-gray-50">
       {
     /* Search Bar */
@@ -87,6 +88,26 @@ function MainMapPage() {
             </div>
           </MotionDiv>}
       </AnimatePresence>
+
+      {/* Current Location Recommendations */}
+      <div className="bg-white border-b border-gray-200 px-4 py-4">
+        <div className="max-w-7xl mx-auto">
+          <h2 className="text-base font-bold text-gray-900 mb-1">📍 현재 위치 기반 장소 추천</h2>
+          <p className="text-sm text-gray-600 mb-3">지금 위치에서 가깝고 사진 찍기 좋은 스팟을 먼저 추천해드려요.</p>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+            {locationRecommendedSpots.map((recommendedSpot) => <Link key={recommendedSpot.id} to={`/spot/${recommendedSpot.id}`}>
+                <div className="rounded-2xl border border-gray-100 bg-gray-50 px-4 py-3 hover:bg-white hover:shadow-sm transition-all">
+                  <h3 className="font-semibold text-gray-900 mb-1 line-clamp-1">{recommendedSpot.name}</h3>
+                  <p className="text-xs text-gray-600 mb-2 line-clamp-1">{recommendedSpot.description}</p>
+                  <div className="flex items-center gap-1 text-xs text-gray-500">
+                    <MapPin className="w-3.5 h-3.5" />
+                    <span>{recommendedSpot.location.region} · 약 {recommendedSpot.distance}km</span>
+                  </div>
+                </div>
+              </Link>)}
+          </div>
+        </div>
+      </div>
 
       {
     /* Map Area */

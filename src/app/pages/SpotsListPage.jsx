@@ -6,11 +6,37 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from "../components/ui/tabs"
 import { mockSpots } from "../data/mockData";
 import { MapPin, Star, Bookmark } from "lucide-react";
 import { PP_COLORS } from "../utils/ppStyles";
+import { useState } from "react";
 function SpotsListPage() {
   const location = useLocation();
   const [searchParams, setSearchParams] = useSearchParams();
+  const [selectedTaste, setSelectedTaste] = useState("all");
+  const [sortBy, setSortBy] = useState("distance");
   const activeTab = searchParams.get("tab") || (location.pathname === "/bookmarks" ? "bookmarks" : location.pathname === "/visited" ? "visited" : "all");
   const filteredSpots = activeTab === "bookmarks" ? mockSpots.filter((s) => s.isBookmarked) : activeTab === "visited" ? mockSpots.filter((s) => s.isVisited) : mockSpots;
+  const sortedSpots = [...filteredSpots].sort((a, b) => {
+    if (sortBy === "rating") return b.rating - a.rating;
+    if (sortBy === "reviews") return b.reviewCount - a.reviewCount;
+    if (sortBy === "name") return a.name.localeCompare(b.name, "ko");
+    return a.distance - b.distance;
+  });
+  const tasteOptions = [
+    { id: "all", label: "전체 추천" },
+    { id: "emotional", label: "감성적인" },
+    { id: "nature", label: "자연" },
+    { id: "night", label: "야경" },
+    { id: "quiet", label: "조용한 곳" }
+  ];
+  const matchesTaste = (spot, taste) => {
+    const categories = Array.isArray(spot.category) ? spot.category : [spot.category];
+    const text = `${spot.description} ${categories.join(" ")} ${spot.tags.join(" ")} ${spot.location.region}`;
+    if (taste === "emotional") return /감성|노을|카페|필름|인생샷/.test(text);
+    if (taste === "nature") return /자연|공원|바다|산/.test(text);
+    if (taste === "night") return /야경|노을|일몰|밤/.test(text);
+    if (taste === "quiet") return /공원|한옥|자연|새벽/.test(text);
+    return true;
+  };
+  const tasteRecommendedSpots = mockSpots.filter((spot) => matchesTaste(spot, selectedTaste)).slice(0, 4);
   const handleTabChange = (value) => {
     const nextParams = new URLSearchParams(searchParams);
     nextParams.set("tab", value);
@@ -47,12 +73,54 @@ function SpotsListPage() {
             </TabsList>
 
             <TabsContent value={activeTab} className="mt-6">
+              {/* Taste Recommendation */}
+              <div className="bg-white rounded-2xl shadow-sm p-4 mb-6">
+                <h3 className="text-base font-bold text-gray-900 mb-1">✨ 취향 기반 장소 추천</h3>
+                <p className="text-sm text-gray-600 mb-3">분위기 태그를 눌러 원하는 감성의 장소를 빠르게 찾아보세요.</p>
+                <div className="flex flex-wrap gap-2 mb-4">
+                  {tasteOptions.map((taste) => <button
+    key={taste.id}
+    type="button"
+    className={`px-3 py-1.5 rounded-full text-xs font-medium transition-colors ${selectedTaste === taste.id ? "text-white" : "bg-gray-100 text-gray-700 hover:bg-gray-200"}`}
+    style={selectedTaste === taste.id ? { backgroundColor: PP_COLORS.sage } : {}}
+    onClick={() => setSelectedTaste(taste.id)}
+  >
+                      {taste.label}
+                    </button>)}
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                  {tasteRecommendedSpots.map((recommendedSpot) => <Link key={recommendedSpot.id} to={`/spot/${recommendedSpot.id}`}>
+                      <div className="rounded-xl border border-gray-100 bg-gray-50 px-3 py-3 hover:bg-white hover:shadow-sm transition-all">
+                        <h4 className="font-semibold text-sm text-gray-900 mb-1 line-clamp-1">{recommendedSpot.name}</h4>
+                        <p className="text-xs text-gray-600 mb-2 line-clamp-1">{recommendedSpot.description}</p>
+                        <div className="flex items-center gap-1 text-xs text-gray-500">
+                          <MapPin className="w-3.5 h-3.5" />
+                          <span>{recommendedSpot.location.region} · 약 {recommendedSpot.distance}km</span>
+                        </div>
+                      </div>
+                    </Link>)}
+                </div>
+              </div>
 
           {
     /* Spots Grid */
   }
+          <div className="flex items-center justify-between mb-3">
+            <p className="text-sm text-gray-600">총 {sortedSpots.length}개 스팟</p>
+            <select
+    value={sortBy}
+    onChange={(e) => setSortBy(e.target.value)}
+    className="h-9 rounded-lg border border-gray-200 bg-white px-3 text-sm text-gray-700 focus:outline-none focus:ring-2"
+    style={{ "--tw-ring-color": `${PP_COLORS.sage}40` }}
+  >
+              <option value="distance">거리순</option>
+              <option value="rating">평점순</option>
+              <option value="reviews">리뷰순</option>
+              <option value="name">이름순</option>
+            </select>
+          </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {filteredSpots.length === 0 ? <div className="col-span-full text-center py-12 bg-white rounded-2xl shadow-sm">
+            {sortedSpots.length === 0 ? <div className="col-span-full text-center py-12 bg-white rounded-2xl shadow-sm">
                 <Bookmark className="w-16 h-16 text-gray-300 mx-auto mb-4" />
                 <h3 className="text-lg font-medium text-gray-900 mb-2">
                   {activeTab === "bookmarks" ? "\uBD81\uB9C8\uD06C\uD55C \uC2A4\uD31F\uC774 \uC5C6\uC2B5\uB2C8\uB2E4" : "\uBC29\uBB38\uD55C \uC2A4\uD31F\uC774 \uC5C6\uC2B5\uB2C8\uB2E4"}
@@ -60,7 +128,7 @@ function SpotsListPage() {
                 <p className="text-gray-600">
                   {activeTab === "bookmarks" ? "\uAD00\uC2EC \uC788\uB294 \uC2A4\uD31F\uC744 \uBD81\uB9C8\uD06C\uD574\uBCF4\uC138\uC694" : "\uC2A4\uD31F\uC744 \uBC29\uBB38\uD558\uACE0 \uAE30\uB85D\uC744 \uB0A8\uACA8\uBCF4\uC138\uC694"}
                 </p>
-              </div> : filteredSpots.map((spot) => <Link key={spot.id} to={`/spot/${spot.id}`}>
+              </div> : sortedSpots.map((spot) => <Link key={spot.id} to={`/spot/${spot.id}`}>
                 <div className="bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-lg transition-all hover:-translate-y-1">
                   <div className="relative h-48">
                     <img
