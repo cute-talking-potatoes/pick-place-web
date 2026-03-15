@@ -1,6 +1,30 @@
-import { Link, useNavigate } from "react-router";
+import { Link, useLocation, useNavigate } from "react-router";
 import { ArrowLeft, Bell, Search, Settings } from "lucide-react";
 import { Button } from "./ui/button";
+
+const desktopNavItems = [
+  {
+    path: "/main",
+    label: "메인",
+    match: (pathname) => pathname === "/main"
+  },
+  {
+    path: "/spots",
+    label: "스팟",
+    match: (pathname) => pathname === "/spots" || pathname.startsWith("/spot/")
+  },
+  {
+    path: "/community",
+    label: "커뮤니티",
+    match: (pathname) => pathname === "/community" || pathname.startsWith("/meetup") || pathname.startsWith("/meetups") || pathname.startsWith("/upload") || pathname.startsWith("/post") || pathname.startsWith("/chat")
+  },
+  {
+    path: "/profile",
+    label: "내정보",
+    match: (pathname) => pathname === "/profile" || pathname.startsWith("/settings") || pathname.startsWith("/my-photos") || pathname.startsWith("/my-meetups") || pathname.startsWith("/friends")
+  }
+];
+
 function TopNav({
   title,
   showBack = false,
@@ -9,9 +33,10 @@ function TopNav({
   showSettings = false
 }) {
   const navigate = useNavigate();
+  const location = useLocation();
   return <header className="fixed top-0 left-0 right-0 bg-white border-b border-gray-200 z-50">
-            <div className="flex items-center justify-between h-14 px-4 max-w-7xl mx-auto">
-                <div className="flex items-center gap-2">
+            <div className="flex items-center justify-between h-14 px-4 max-w-7xl mx-auto gap-3">
+                <div className="flex items-center gap-2 min-w-0 lg:hidden">
                     {showBack && <Button
     variant="ghost"
     size="icon"
@@ -26,7 +51,27 @@ function TopNav({
                         </Link>}
                 </div>
 
-                <div className="flex items-center gap-2">
+                <div className="hidden lg:flex items-center min-w-[120px]">
+                    <Link to="/main" className="font-bold text-xl" style={{ color: "#A5C89E" }}>
+                        📍 픽플
+                    </Link>
+                </div>
+
+                <nav aria-label="주요 메뉴" className="hidden lg:flex items-center gap-1">
+                    {desktopNavItems.map((item) => {
+    const isActive = item.match(location.pathname);
+    return <Link
+      key={item.path}
+      to={item.path}
+      aria-current={isActive ? "page" : undefined}
+      className={`px-4 py-2 text-sm font-medium rounded-full border transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-[#A5C89E] ${isActive ? "text-[#6F8C67] bg-[#EEF5E8] border-[#CFE1C9]" : "text-gray-600 border-transparent hover:text-[#6F8C67] hover:bg-[#F4F8F1]"}`}
+    >
+                            {item.label}
+                        </Link>;
+  })}
+                </nav>
+
+                <div className="flex items-center gap-2 shrink-0 lg:hidden">
                     {showSearch && <Button variant="ghost" size="icon">
                             <Search className="w-5 h-5" />
                         </Button>}
@@ -39,6 +84,23 @@ function TopNav({
                                 <Settings className="w-5 h-5" />
                             </Button>
                         </Link>}
+                </div>
+
+                <div className="hidden lg:flex items-center gap-2 min-w-[120px] justify-end">
+                    {showSearch ? <Button variant="ghost" size="icon" aria-label="검색">
+                            <Search className="w-5 h-5" />
+                        </Button> : <span className="w-9 h-9" aria-hidden />}
+
+                    {showNotification ? <Button variant="ghost" size="icon" className="relative" aria-label="알림">
+                            <Bell className="w-5 h-5" />
+                            <span className="absolute top-2 right-2 w-2 h-2 bg-red-500 rounded-full" />
+                        </Button> : <span className="w-9 h-9" aria-hidden />}
+
+                    {showSettings ? <Link to="/settings" aria-label="설정">
+                            <Button variant="ghost" size="icon">
+                                <Settings className="w-5 h-5" />
+                            </Button>
+                        </Link> : <span className="w-9 h-9" aria-hidden />}
                 </div>
             </div>
         </header>;

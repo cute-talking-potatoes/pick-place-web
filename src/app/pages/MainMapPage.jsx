@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Link } from "react-router";
+import { TopNav } from "../components/TopNav";
 import { BottomNav } from "../components/BottomNav";
 import { Button } from "../components/ui/button";
 import { Input } from "../components/ui/input";
@@ -23,7 +24,8 @@ function MainMapPage() {
   const [searchQuery, setSearchQuery] = useState("");
   const spot = selectedSpot ? mockSpots.find((s) => s.id === selectedSpot) : null;
   const locationRecommendedSpots = mockSpots.slice(0, 3);
-  return <div className="h-screen flex flex-col bg-gray-50">
+  return <div className="h-screen flex flex-col bg-gray-50 pt-14">
+      <TopNav />
       {
     /* Search Bar */
   }
