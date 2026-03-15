@@ -20,6 +20,8 @@ function QuestionDetailPage() {
   }, []);
   const question = useMemo(() => [...storedQuestions, ...mockQuestions].find((item) => item.id === id) || null, [id, storedQuestions]);
   const [commentText, setCommentText] = useState("");
+  const [replyTargetId, setReplyTargetId] = useState(null);
+  const [replyText, setReplyText] = useState("");
   const [comments, setComments] = useState(() => {
     try {
       const saved = JSON.parse(localStorage.getItem(`community_question_comments_${id}`) || "null");
@@ -36,12 +38,30 @@ function QuestionDetailPage() {
       id: `qc-${Date.now()}`,
       userName: "김포토",
       content: commentText.trim(),
-      createdAt: "방금 전"
+      createdAt: "방금 전",
+      replies: []
     };
     const nextComments = [newComment, ...comments];
     setComments(nextComments);
     localStorage.setItem(`community_question_comments_${id}`, JSON.stringify(nextComments));
     setCommentText("");
+  };
+  const handleAddReply = (commentId) => {
+    if (!replyText.trim()) return;
+    const nextComments = comments.map((comment) => {
+      if (comment.id !== commentId) return comment;
+      const nextReplies = [...(comment.replies || []), {
+        id: `qcr-${Date.now()}`,
+        userName: "김포토",
+        content: replyText.trim(),
+        createdAt: "방금 전"
+      }];
+      return { ...comment, replies: nextReplies };
+    });
+    setComments(nextComments);
+    localStorage.setItem(`community_question_comments_${id}`, JSON.stringify(nextComments));
+    setReplyText("");
+    setReplyTargetId(null);
   };
 
   if (!question) {
@@ -89,7 +109,30 @@ function QuestionDetailPage() {
                       <div className="font-medium text-sm mb-1 text-gray-900">{comment.userName}</div>
                       <p className="text-sm text-gray-700">{comment.content}</p>
                     </div>
-                    <div className="text-xs text-gray-500 mt-2">{comment.createdAt}</div>
+                    <div className="mt-2 flex items-center gap-3">
+                      <div className="text-xs text-gray-500">{comment.createdAt}</div>
+                      <button
+                        type="button"
+                        className="text-xs hover:underline"
+                        style={{ color: PP_COLORS.sage }}
+                        onClick={() => setReplyTargetId((prev) => prev === comment.id ? null : comment.id)}
+                      >
+                        답글 달기
+                      </button>
+                    </div>
+                    {(comment.replies || []).length > 0 && <div className="mt-3 space-y-2 pl-3 border-l border-gray-200">
+                        {comment.replies.map((reply) => <div key={reply.id} className="bg-gray-50 rounded-xl p-3">
+                            <div className="font-medium text-xs text-gray-900 mb-1">{reply.userName}</div>
+                            <p className="text-sm text-gray-700">{reply.content}</p>
+                            <div className="text-xs text-gray-500 mt-1">{reply.createdAt}</div>
+                          </div>)}
+                      </div>}
+                    {replyTargetId === comment.id && <div className="mt-3 flex gap-2">
+                        <Input value={replyText} onChange={(e) => setReplyText(e.target.value)} placeholder="↪ 답글을 입력하세요..." />
+                        <Button onClick={() => handleAddReply(comment.id)} disabled={!replyText.trim()} style={{ backgroundColor: PP_COLORS.sage, color: "white" }}>
+                          답글
+                        </Button>
+                      </div>}
                   </div>
                 </div>)}
             </div>

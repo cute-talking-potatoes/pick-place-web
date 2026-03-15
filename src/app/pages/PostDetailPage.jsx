@@ -5,7 +5,7 @@ import { Button } from "../components/ui/button";
 import { Input } from "../components/ui/input";
 import { Avatar, AvatarFallback, AvatarImage } from "../components/ui/avatar";
 import { mockPosts, mockComments } from "../data/mockData";
-import { Heart, MessageCircle, Bookmark, Share2, Send, MoreVertical } from "lucide-react";
+import { Heart, MessageCircle, Bookmark, Share2, Send, MoreVertical, X, ChevronLeft, ChevronRight } from "lucide-react";
 import { PP_COLORS } from "../utils/ppStyles";
 function PostDetailPage() {
   const { id } = useParams();
@@ -15,6 +15,7 @@ function PostDetailPage() {
   const [comment, setComment] = useState("");
   const [replyTo, setReplyTo] = useState(null);
   const [showImageIndex, setShowImageIndex] = useState(0);
+  const [isImageViewerOpen, setIsImageViewerOpen] = useState(false);
   if (!post) {
     return <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center">
@@ -70,13 +71,18 @@ function PostDetailPage() {
     /* Images */
   }
           <div className="relative">
-            <div className="aspect-[4/3] bg-gray-100 overflow-hidden">
+            <button
+              type="button"
+              className="w-full aspect-[4/3] bg-gray-100 overflow-hidden"
+              onClick={() => setIsImageViewerOpen(true)}
+              aria-label="이미지 크게 보기"
+            >
               <img
     src={post.images[showImageIndex]}
     alt=""
     className="w-full h-full object-cover"
   />
-            </div>
+            </button>
             {post.images.length > 1 && <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2">
                 {post.images.map((_, index) => <button
     key={index}
@@ -247,6 +253,52 @@ function PostDetailPage() {
           </div>
         </div>
       </div>
+
+      {isImageViewerOpen && <div className="fixed inset-0 z-[100] bg-black/90 flex items-center justify-center p-4" onClick={() => setIsImageViewerOpen(false)}>
+          <button
+            type="button"
+            onClick={() => setIsImageViewerOpen(false)}
+            className="absolute top-4 right-4 w-10 h-10 rounded-full bg-white/20 text-white flex items-center justify-center"
+            aria-label="확대 이미지 닫기"
+          >
+            <X className="w-5 h-5" />
+          </button>
+
+          {post.images.length > 1 && <button
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation();
+                setShowImageIndex((prev) => prev === 0 ? post.images.length - 1 : prev - 1);
+              }}
+              className="absolute left-4 w-10 h-10 rounded-full bg-white/20 text-white flex items-center justify-center"
+              aria-label="이전 이미지"
+            >
+              <ChevronLeft className="w-5 h-5" />
+            </button>}
+
+          <img
+            src={post.images[showImageIndex]}
+            alt=""
+            className="max-h-[85vh] max-w-[92vw] object-contain"
+            onClick={(e) => e.stopPropagation()}
+          />
+
+          {post.images.length > 1 && <button
+              type="button"
+              onClick={(e) => {
+                e.stopPropagation();
+                setShowImageIndex((prev) => prev === post.images.length - 1 ? 0 : prev + 1);
+              }}
+              className="absolute right-4 w-10 h-10 rounded-full bg-white/20 text-white flex items-center justify-center"
+              aria-label="다음 이미지"
+            >
+              <ChevronRight className="w-5 h-5" />
+            </button>}
+
+          {post.images.length > 1 && <div className="absolute bottom-6 px-3 py-1 rounded-full bg-white/20 text-white text-sm">
+              {showImageIndex + 1} / {post.images.length}
+            </div>}
+        </div>}
     </div>;
 }
 export {
