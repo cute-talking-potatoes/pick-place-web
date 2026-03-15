@@ -60,7 +60,7 @@ function SpotDetailPage() {
                     <h1 className="text-2xl lg:text-3xl font-bold text-gray-900">
                       {spot.name}
                     </h1>
-                    {isVisited && <CheckCircle className="w-6 h-6" fill={PP_COLORS.sage} style={{ color: PP_COLORS.sage }} />}
+                    {isVisited && <CheckCircle className="w-6 h-6" fill={PP_COLORS.sage} style={{ color: "white" }} />}
                   </div>
                   <div className="flex items-center gap-2 text-gray-600 mb-3">
                     <MapPin className="w-4 h-4" />

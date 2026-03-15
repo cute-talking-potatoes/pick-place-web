@@ -23,6 +23,7 @@ import { HelpMeetupsPage } from "./app/pages/HelpMeetupsPage";
 import { HelpCommunityPage } from "./app/pages/HelpCommunityPage";
 import { ContactPage } from "./app/pages/ContactPage";
 import { PoliciesPage } from "./app/pages/PoliciesPage";
+import { LanguageSettingsPage } from "./app/pages/LanguageSettingsPage";
 import { EditProfilePage } from "./app/pages/EditProfilePage";
 import { EditMeetupPage } from "./app/pages/EditMeetupPage";
 import { CreateMeetupPage } from "./app/pages/CreateMeetupPage";
@@ -50,6 +51,7 @@ export const router = createBrowserRouter([
   { path: "/settings", Component: SettingsPage },
   { path: "/settings/password", Component: ChangePasswordPage },
   { path: "/settings/privacy", Component: PrivacySettingsPage },
+  { path: "/settings/language", Component: LanguageSettingsPage },
   { path: "/settings/help", Component: HelpPage },
   { path: "/settings/help/getting-started", Component: HelpGettingStartedPage },
   { path: "/settings/help/spots", Component: HelpSpotsPage },

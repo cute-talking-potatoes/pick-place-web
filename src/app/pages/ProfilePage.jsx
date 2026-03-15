@@ -214,7 +214,7 @@ function ProfilePage() {
                 <button
                   type="button"
                   onClick={() => setActiveFriendSection((prev) => prev === "visited" ? null : "visited")}
-                  className={`text-center rounded-lg p-3 transition-colors ${activeFriendSection === "visited" ? "bg-[#EEF5E8]" : "hover:bg-gray-50"}`}
+                  className={`text-center rounded-lg p-3 transition-colors ${activeFriendSection === "visited" ? "bg-[#EEF5E8] dark:bg-[#243226]" : "hover:bg-gray-50 dark:hover:bg-gray-800"}`}
                 >
                   <div className="text-2xl font-bold text-gray-900 mb-1">{friendProfile.visitedCount}</div>
                   <div className="text-sm text-gray-600">📍 방문</div>
@@ -222,7 +222,7 @@ function ProfilePage() {
                 <button
                   type="button"
                   onClick={() => setActiveFriendSection((prev) => prev === "bookmarks" ? null : "bookmarks")}
-                  className={`text-center rounded-lg p-3 transition-colors ${activeFriendSection === "bookmarks" ? "bg-[#EEF5E8]" : "hover:bg-gray-50"}`}
+                  className={`text-center rounded-lg p-3 transition-colors ${activeFriendSection === "bookmarks" ? "bg-[#EEF5E8] dark:bg-[#243226]" : "hover:bg-gray-50 dark:hover:bg-gray-800"}`}
                 >
                   <div className="text-2xl font-bold text-gray-900 mb-1">{friendProfile.bookmarkCount}</div>
                   <div className="text-sm text-gray-600">💚 북마크</div>
@@ -230,7 +230,7 @@ function ProfilePage() {
                 <button
                   type="button"
                   onClick={() => setActiveFriendSection((prev) => prev === "photos" ? null : "photos")}
-                  className={`text-center rounded-lg p-3 transition-colors ${activeFriendSection === "photos" ? "bg-[#EEF5E8]" : "hover:bg-gray-50"}`}
+                  className={`text-center rounded-lg p-3 transition-colors ${activeFriendSection === "photos" ? "bg-[#EEF5E8] dark:bg-[#243226]" : "hover:bg-gray-50 dark:hover:bg-gray-800"}`}
                 >
                   <div className="text-2xl font-bold text-gray-900 mb-1">{friendProfile.postsCount}</div>
                   <div className="text-sm text-gray-600">📸 사진</div>
@@ -418,7 +418,7 @@ function ProfilePage() {
               <button
                 type="button"
                 onClick={() => setActiveOwnSection((prev) => prev === "visited" ? null : "visited")}
-                className={`text-center rounded-lg p-3 transition-colors ${activeOwnSection === "visited" ? "bg-[#EEF5E8]" : "hover:bg-gray-50"}`}
+                className={`text-center rounded-lg p-3 transition-colors ${activeOwnSection === "visited" ? "bg-[#EEF5E8] dark:bg-[#243226]" : "hover:bg-gray-50 dark:hover:bg-gray-800"}`}
               >
                   <div className="text-2xl font-bold text-gray-900 mb-1">
                     {visitedCount}
@@ -428,7 +428,7 @@ function ProfilePage() {
               <button
                 type="button"
                 onClick={() => setActiveOwnSection((prev) => prev === "bookmarks" ? null : "bookmarks")}
-                className={`text-center rounded-lg p-3 transition-colors ${activeOwnSection === "bookmarks" ? "bg-[#EEF5E8]" : "hover:bg-gray-50"}`}
+                className={`text-center rounded-lg p-3 transition-colors ${activeOwnSection === "bookmarks" ? "bg-[#EEF5E8] dark:bg-[#243226]" : "hover:bg-gray-50 dark:hover:bg-gray-800"}`}
               >
                   <div className="text-2xl font-bold text-gray-900 mb-1">
                     {bookmarkCount}
@@ -438,7 +438,7 @@ function ProfilePage() {
               <button
                 type="button"
                 onClick={() => setActiveOwnSection((prev) => prev === "photos" ? null : "photos")}
-                className={`text-center rounded-lg p-3 transition-colors ${activeOwnSection === "photos" ? "bg-[#EEF5E8]" : "hover:bg-gray-50"}`}
+                className={`text-center rounded-lg p-3 transition-colors ${activeOwnSection === "photos" ? "bg-[#EEF5E8] dark:bg-[#243226]" : "hover:bg-gray-50 dark:hover:bg-gray-800"}`}
               >
                 <div className="text-2xl font-bold text-gray-900 mb-1">
                   {myPosts.length}
