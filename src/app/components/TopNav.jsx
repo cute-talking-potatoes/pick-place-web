@@ -21,7 +21,7 @@ const desktopNavItems = [
   {
     path: "/profile",
     label: "내정보",
-    match: (pathname) => pathname === "/profile" || pathname.startsWith("/settings") || pathname.startsWith("/my-photos") || pathname.startsWith("/my-meetups") || pathname.startsWith("/friends")
+    match: (pathname) => pathname === "/profile" || pathname.startsWith("/profile/") || pathname.startsWith("/settings") || pathname.startsWith("/friends")
   }
 ];
 
@@ -29,8 +29,7 @@ function TopNav({
   title,
   showBack = false,
   showSearch = false,
-  showNotification = false,
-  showSettings = false
+  showNotification = false
 }) {
   const navigate = useNavigate();
   const location = useLocation();
@@ -79,11 +78,11 @@ function TopNav({
                             <Bell className="w-5 h-5" />
                             <span className="absolute top-2 right-2 w-2 h-2 bg-red-500 rounded-full" />
                         </Button>}
-                    {showSettings && <Link to="/settings">
-                            <Button variant="ghost" size="icon">
-                                <Settings className="w-5 h-5" />
-                            </Button>
-                        </Link>}
+                    <Link to="/settings">
+                        <Button variant="ghost" size="icon" aria-label="설정">
+                            <Settings className="w-5 h-5" />
+                        </Button>
+                    </Link>
                 </div>
 
                 <div className="hidden lg:flex items-center gap-2 min-w-[120px] justify-end">
@@ -96,11 +95,11 @@ function TopNav({
                             <span className="absolute top-2 right-2 w-2 h-2 bg-red-500 rounded-full" />
                         </Button> : <span className="w-9 h-9" aria-hidden />}
 
-                    {showSettings ? <Link to="/settings" aria-label="설정">
-                            <Button variant="ghost" size="icon">
-                                <Settings className="w-5 h-5" />
-                            </Button>
-                        </Link> : <span className="w-9 h-9" aria-hidden />}
+                    <Link to="/settings" aria-label="설정">
+                        <Button variant="ghost" size="icon">
+                            <Settings className="w-5 h-5" />
+                        </Button>
+                    </Link>
                 </div>
             </div>
         </header>;

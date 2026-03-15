@@ -40,7 +40,7 @@ function PostDetailPage() {
       <TopNav showBack />
 
       <div className="pt-14">
-        <div className="max-w-4xl mx-auto bg-white lg:rounded-2xl lg:shadow-sm lg:my-6">
+        <div className="max-w-7xl mx-auto bg-white lg:rounded-2xl lg:shadow-sm lg:my-6">
           {
     /* Post Header */
   }
@@ -212,7 +212,7 @@ function PostDetailPage() {
     /* Comment Input */
   }
       <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 p-4">
-        <div className="max-w-4xl mx-auto">
+        <div className="max-w-7xl mx-auto">
           {replyTo && <div className="flex items-center justify-between mb-2 text-sm">
               <span className="text-gray-600">답글 작성 중...</span>
               <button

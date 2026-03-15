@@ -6,12 +6,14 @@ function CommunityModeTabs({ activeTab }) {
   return <Tabs
     value={activeTab}
     onValueChange={(value) => {
-      if (value === "feed") navigate("/community");
+      if (value === "feed") navigate("/community?tab=feed");
+      if (value === "question") navigate("/community?tab=question");
       if (value === "meetups") navigate("/meetups");
     }}
   >
-      <TabsList className="w-full grid grid-cols-2 bg-white mb-6">
+      <TabsList className="w-full grid grid-cols-3 bg-white mb-6">
         <TabsTrigger value="feed">📸 피드</TabsTrigger>
+        <TabsTrigger value="question">❓ 질문</TabsTrigger>
         <TabsTrigger value="meetups">👥 모임</TabsTrigger>
       </TabsList>
     </Tabs>;

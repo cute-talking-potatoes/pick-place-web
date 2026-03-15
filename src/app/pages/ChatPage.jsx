@@ -9,11 +9,21 @@ import { Badge } from "../components/ui/badge";
 import { Send, ArrowLeft } from "lucide-react";
 import { PP_COLORS } from "../utils/ppStyles";
 import { mockChatRooms, mockMessages } from "../data/mockData";
+const directChatNameById = {
+  "2": "이사진",
+  "3": "박여행",
+  "4": "최렌즈",
+  "5": "정셔터",
+  "8": "서뷰파인더",
+  "9": "한찰칵",
+  "10": "조인화"
+};
 function ChatPage() {
   const { id } = useParams();
   const [message, setMessage] = useState("");
   if (id) {
     const room = mockChatRooms.find((r) => r.id === id);
+    const chatTitle = room?.name || `${directChatNameById[id] || "사용자"}님과의 대화`;
     return <div className="h-screen flex flex-col bg-gray-50">
         {
       /* Header */
@@ -25,8 +35,8 @@ function ChatPage() {
             </Button>
           </Link>
           <div className="flex-1">
-            <h2 className="font-semibold">{room?.name}</h2>
-            <p className="text-xs text-gray-500">3명 참여 중</p>
+            <h2 className="font-semibold">{chatTitle}</h2>
+            <p className="text-xs text-gray-500">{room ? "3명 참여 중" : "1:1 메시지"}</p>
           </div>
         </div>
 
@@ -92,7 +102,7 @@ function ChatPage() {
       <TopNav title="💬 채팅" />
 
       <div className="pt-14">
-        <div className="max-w-4xl mx-auto px-4 py-6">
+        <div className="max-w-7xl mx-auto px-4 py-6">
           <div className="space-y-2">
             {mockChatRooms.map((room) => <Link key={room.id} to={`/chat/${room.id}`}>
                 <div className="bg-white rounded-2xl p-4 shadow-sm hover:shadow-md transition-all hover:-translate-y-0.5 flex items-center gap-4">

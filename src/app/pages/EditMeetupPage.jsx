@@ -43,7 +43,7 @@ function EditMeetupPage() {
     return <div className="min-h-screen bg-gray-50 pb-20 lg:pb-4">
         <TopNav title="모임 수정" showBack />
         <div className="pt-14">
-          <div className="max-w-2xl mx-auto px-4 py-10">
+          <div className="max-w-7xl mx-auto px-4 py-10">
             <div className="bg-white rounded-2xl shadow-sm p-6 text-center">
               <h2 className="text-lg font-bold text-gray-900 mb-2">모임 정보를 찾을 수 없습니다</h2>
               <p className="text-sm text-gray-600 mb-5">존재하지 않거나 접근할 수 없는 모임입니다.</p>
@@ -92,7 +92,7 @@ function EditMeetupPage() {
       <TopNav title="모임 수정" showBack />
 
       <div className="pt-14">
-        <form onSubmit={handleSubmit} className="max-w-3xl mx-auto px-4 py-6 space-y-5">
+        <form onSubmit={handleSubmit} className="max-w-7xl mx-auto px-4 py-6 space-y-5">
           <div className="bg-white rounded-2xl shadow-sm p-5 space-y-4">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">모임 제목</label>

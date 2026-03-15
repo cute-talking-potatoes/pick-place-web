@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Link } from "react-router";
 import { TopNav } from "../components/TopNav";
 import { Switch } from "../components/ui/switch";
 import { Label } from "../components/ui/label";
@@ -9,6 +10,7 @@ import {
   Globe,
   Moon,
   Lock,
+  LogOut,
   Shield,
   HelpCircle,
   MessageSquare,
@@ -32,7 +34,7 @@ function SettingsPage() {
       <TopNav title="설정" showBack />
 
       <div className="pt-14">
-        <div className="max-w-4xl mx-auto px-4 py-6 space-y-4">
+        <div className="max-w-7xl mx-auto px-4 py-6 space-y-4">
           {
     /* Account Section */
   }
@@ -41,7 +43,8 @@ function SettingsPage() {
               <h2 className="font-bold text-lg">계정</h2>
             </div>
             
-            <button className="w-full flex items-center justify-between p-4 hover:bg-gray-50 transition-colors border-b border-gray-100">
+            <Link to="/settings/password" className="block">
+              <button className="w-full flex items-center justify-between p-4 hover:bg-gray-50 transition-colors border-b border-gray-100">
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 rounded-full flex items-center justify-center" style={{ backgroundColor: `${PP_COLORS.sage}20` }}>
                   <Lock className="w-5 h-5" style={{ color: PP_COLORS.sage }} />
@@ -52,9 +55,11 @@ function SettingsPage() {
                 </div>
               </div>
               <ChevronRight className="w-5 h-5 text-gray-400" />
-            </button>
+              </button>
+            </Link>
 
-            <button className="w-full flex items-center justify-between p-4 hover:bg-gray-50 transition-colors">
+            <Link to="/settings/privacy" className="block">
+              <button className="w-full flex items-center justify-between p-4 hover:bg-gray-50 transition-colors">
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 rounded-full flex items-center justify-center" style={{ backgroundColor: `${PP_COLORS.lime}40` }}>
                   <Shield className="w-5 h-5" style={{ color: PP_COLORS.olive }} />
@@ -65,6 +70,23 @@ function SettingsPage() {
                 </div>
               </div>
               <ChevronRight className="w-5 h-5 text-gray-400" />
+              </button>
+            </Link>
+
+            <button
+              className="w-full flex items-center justify-between p-4 hover:bg-gray-50 transition-colors border-t border-gray-100"
+              onClick={() => alert("로그아웃되었습니다.")}
+            >
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-full flex items-center justify-center bg-red-50">
+                  <LogOut className="w-5 h-5 text-red-500" />
+                </div>
+                <div className="text-left">
+                  <div className="font-medium text-red-600">로그아웃</div>
+                  <div className="text-sm text-gray-500">현재 계정에서 로그아웃합니다</div>
+                </div>
+              </div>
+              <ChevronRight className="w-5 h-5 text-red-400" />
             </button>
           </div>
 
@@ -214,7 +236,8 @@ function SettingsPage() {
               <h2 className="font-bold text-lg">고객 지원</h2>
             </div>
 
-            <button className="w-full flex items-center justify-between p-4 hover:bg-gray-50 transition-colors border-b border-gray-100">
+            <Link to="/settings/help" className="block">
+              <button className="w-full flex items-center justify-between p-4 hover:bg-gray-50 transition-colors border-b border-gray-100">
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 rounded-full flex items-center justify-center" style={{ backgroundColor: `${PP_COLORS.cream}60` }}>
                   <HelpCircle className="w-5 h-5" style={{ color: PP_COLORS.olive }} />
@@ -225,9 +248,11 @@ function SettingsPage() {
                 </div>
               </div>
               <ChevronRight className="w-5 h-5 text-gray-400" />
-            </button>
+              </button>
+            </Link>
 
-            <button className="w-full flex items-center justify-between p-4 hover:bg-gray-50 transition-colors border-b border-gray-100">
+            <Link to="/settings/contact" className="block">
+              <button className="w-full flex items-center justify-between p-4 hover:bg-gray-50 transition-colors border-b border-gray-100">
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 rounded-full flex items-center justify-center" style={{ backgroundColor: `${PP_COLORS.lime}40` }}>
                   <MessageSquare className="w-5 h-5" style={{ color: PP_COLORS.olive }} />
@@ -238,9 +263,11 @@ function SettingsPage() {
                 </div>
               </div>
               <ChevronRight className="w-5 h-5 text-gray-400" />
-            </button>
+              </button>
+            </Link>
 
-            <button className="w-full flex items-center justify-between p-4 hover:bg-gray-50 transition-colors">
+            <Link to="/settings/policies" className="block">
+              <button className="w-full flex items-center justify-between p-4 hover:bg-gray-50 transition-colors">
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 rounded-full flex items-center justify-center" style={{ backgroundColor: `${PP_COLORS.sage}20` }}>
                   <FileText className="w-5 h-5" style={{ color: PP_COLORS.sage }} />
@@ -251,7 +278,8 @@ function SettingsPage() {
                 </div>
               </div>
               <ChevronRight className="w-5 h-5 text-gray-400" />
-            </button>
+              </button>
+            </Link>
           </div>
 
           {

@@ -5,8 +5,7 @@ import { Button } from "../components/ui/button";
 import { Badge } from "../components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "../components/ui/avatar";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "../components/ui/tabs";
-import { Input } from "../components/ui/input";
-import { UserPlus, Search, Check, X, MoreVertical, Camera, MapPin } from "lucide-react";
+import { UserPlus, Check, X, MoreVertical, Camera, MapPin } from "lucide-react";
 import { PP_COLORS } from "../utils/ppStyles";
 const mockFriends = [
   {
@@ -96,33 +95,156 @@ const mockSuggestions = [
 ];
 function FriendsPage() {
   const [searchParams, setSearchParams] = useSearchParams();
-  const activeTab = searchParams.get("tab") || "friends";
+  const activeTab = searchParams.get("tab") === "requests" ? "requests" : "friends";
   const handleTabChange = (value) => {
     const nextParams = new URLSearchParams(searchParams);
     nextParams.set("tab", value);
     setSearchParams(nextParams, { replace: true });
   };
+  const friendsList = <div className="space-y-3">
+      {mockFriends.map((friend) => <div key={friend.id} className="bg-white rounded-2xl p-4 shadow-sm hover:shadow-md transition-shadow">
+          <div className="flex items-start gap-3">
+            <Avatar className="w-14 h-14 ring-2 ring-[#D8E983]/30">
+              <AvatarImage src={friend.avatar} />
+              <AvatarFallback>{friend.name[0]}</AvatarFallback>
+            </Avatar>
+            <div className="flex-1 min-w-0">
+              <div className="flex items-center justify-between mb-1">
+                <h3 className="font-bold text-gray-900">{friend.name}</h3>
+                <button className="text-gray-400 hover:text-gray-600">
+                  <MoreVertical className="w-5 h-5" />
+                </button>
+              </div>
+              <p className="text-sm text-gray-600 mb-2 line-clamp-1">{friend.bio}</p>
+              <div className="flex items-center gap-4 text-xs text-gray-500 mb-3">
+                <div className="flex items-center gap-1">
+                  <Camera className="w-3 h-3" />
+                  <span>{friend.postsCount}개 게시물</span>
+                </div>
+                <div className="flex items-center gap-1">
+                  <MapPin className="w-3 h-3" />
+                  <span>{friend.spotsVisited}곳 방문</span>
+                </div>
+              </div>
+              <div className="flex gap-2">
+                <Link to={`/chat/${friend.id}`} className="flex-1">
+                  <Button size="sm" variant="outline" className="w-full">
+                    💬 메시지
+                  </Button>
+                </Link>
+                <Link to={`/profile/${friend.id}`} className="flex-1">
+                  <Button
+      size="sm"
+      className="w-full"
+      style={{ backgroundColor: PP_COLORS.sage, color: "white" }}
+    >
+                    프로필 보기
+                  </Button>
+                </Link>
+              </div>
+            </div>
+          </div>
+        </div>)}
+    </div>;
+  const suggestionsList = <div className="space-y-3">
+      {mockSuggestions.map((suggestion) => <div key={suggestion.id} className="bg-white rounded-2xl p-4 shadow-sm hover:shadow-md transition-shadow">
+          <div className="flex items-start gap-3">
+            <Avatar className="w-14 h-14 ring-2 ring-[#D8E983]/30">
+              <AvatarImage src={suggestion.avatar} />
+              <AvatarFallback>{suggestion.name[0]}</AvatarFallback>
+            </Avatar>
+            <div className="flex-1 min-w-0">
+              <h3 className="font-bold text-gray-900 mb-1">{suggestion.name}</h3>
+              <p className="text-sm text-gray-600 mb-2 line-clamp-1">{suggestion.bio}</p>
+              <div className="mb-3">
+                <Badge
+      variant="secondary"
+      className="text-xs"
+      style={{ backgroundColor: `${PP_COLORS.lime}40`, color: PP_COLORS.olive }}
+    >
+                  {suggestion.reason}
+                </Badge>
+                <p className="text-xs text-gray-500 mt-1">
+                  친구 {suggestion.mutualFriends}명과 함께 아는 사람
+                </p>
+              </div>
+              <div className="flex gap-2">
+                <Button
+      size="sm"
+      className="flex-1"
+      style={{ backgroundColor: PP_COLORS.sage, color: "white" }}
+    >
+                  <UserPlus className="w-4 h-4 mr-1" />
+                  친구 추가
+                </Button>
+                <Link to={`/profile/${suggestion.id}`}>
+                  <Button size="sm" variant="outline">
+                    프로필
+                  </Button>
+                </Link>
+              </div>
+            </div>
+          </div>
+        </div>)}
+    </div>;
+  const suggestionsPanel = <aside>
+      <div className="sticky top-20">
+        <h3 className="text-base font-semibold text-gray-900 mb-3">친구 추천</h3>
+        {suggestionsList}
+      </div>
+    </aside>;
+  const requestsList = mockFriendRequests.length === 0 ? <div className="text-center py-12 bg-white rounded-2xl shadow-sm">
+      <UserPlus className="w-16 h-16 text-gray-300 mx-auto mb-4" />
+      <h3 className="text-lg font-medium text-gray-900 mb-2">
+        친구 요청이 없습니다
+      </h3>
+      <p className="text-gray-600">
+        새로운 친구 요청이 오면 여기에 표시됩니다
+      </p>
+    </div> : <div className="space-y-3">
+      {mockFriendRequests.map((request) => <div key={request.id} className="bg-white rounded-2xl p-4 shadow-sm">
+          <div className="flex items-start gap-3">
+            <Avatar className="w-14 h-14 ring-2 ring-[#D8E983]/30">
+              <AvatarImage src={request.avatar} />
+              <AvatarFallback>{request.name[0]}</AvatarFallback>
+            </Avatar>
+            <div className="flex-1 min-w-0">
+              <div className="flex items-center justify-between mb-1">
+                <h3 className="font-bold text-gray-900">{request.name}</h3>
+                <span className="text-xs text-gray-500">{request.timestamp}</span>
+              </div>
+              <p className="text-sm text-gray-600 mb-2">{request.bio}</p>
+              <p className="text-xs text-gray-500 mb-3">
+                친구 {request.mutualFriends}명과 함께 아는 사람
+              </p>
+              <div className="flex gap-2">
+                <Button
+      size="sm"
+      className="flex-1"
+      style={{ backgroundColor: PP_COLORS.sage, color: "white" }}
+    >
+                  <Check className="w-4 h-4 mr-1" />
+                  수락
+                </Button>
+                <Button size="sm" variant="outline" className="flex-1">
+                  <X className="w-4 h-4 mr-1" />
+                  거절
+                </Button>
+              </div>
+            </div>
+          </div>
+        </div>)}
+    </div>;
   return <div className="min-h-screen bg-gray-50 pb-20 lg:pb-4">
       <TopNav title="👥 친구" showBack />
 
       <div className="pt-14">
-        <div className="max-w-4xl mx-auto px-4 py-6">
-          {
-    /* Search */
-  }
-          <div className="relative mb-6">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
-            <Input
-    placeholder="친구 검색..."
-    className="pl-10"
-  />
-          </div>
-
+        <div className="max-w-7xl mx-auto px-4 py-6">
           {
     /* Tabs */
   }
           <Tabs value={activeTab} onValueChange={handleTabChange}>
-            <TabsList className="w-full grid grid-cols-3 bg-white mb-6 p-1 h-auto gap-1">
+            <TabsList className="w-full grid grid-cols-2 bg-white mb-6 p-1 h-auto gap-1">
               <TabsTrigger value="friends" className="h-auto py-3 flex flex-col gap-1 data-[state=active]:shadow-sm">
                 <span className="text-xl font-bold" style={{ color: PP_COLORS.sage }}>
                   {mockFriends.length}
@@ -135,62 +257,16 @@ function FriendsPage() {
                 </span>
                 <span className="text-xs text-gray-600">친구 요청</span>
               </TabsTrigger>
-              <TabsTrigger value="suggestions" className="h-auto py-3 flex flex-col gap-1 data-[state=active]:shadow-sm">
-                <span className="text-xl font-bold" style={{ color: PP_COLORS.lime }}>
-                  {mockSuggestions.length}
-                </span>
-                <span className="text-xs text-gray-600">추천</span>
-              </TabsTrigger>
             </TabsList>
 
             {
     /* Friends List */
   }
             <TabsContent value="friends">
-              <div className="space-y-3">
-                {mockFriends.map((friend) => <div key={friend.id} className="bg-white rounded-2xl p-4 shadow-sm hover:shadow-md transition-shadow">
-                    <div className="flex items-start gap-3">
-                      <Avatar className="w-14 h-14 ring-2 ring-[#D8E983]/30">
-                        <AvatarImage src={friend.avatar} />
-                        <AvatarFallback>{friend.name[0]}</AvatarFallback>
-                      </Avatar>
-                      <div className="flex-1 min-w-0">
-                        <div className="flex items-center justify-between mb-1">
-                          <h3 className="font-bold text-gray-900">{friend.name}</h3>
-                          <button className="text-gray-400 hover:text-gray-600">
-                            <MoreVertical className="w-5 h-5" />
-                          </button>
-                        </div>
-                        <p className="text-sm text-gray-600 mb-2 line-clamp-1">{friend.bio}</p>
-                        <div className="flex items-center gap-4 text-xs text-gray-500 mb-3">
-                          <div className="flex items-center gap-1">
-                            <Camera className="w-3 h-3" />
-                            <span>{friend.postsCount}개 게시물</span>
-                          </div>
-                          <div className="flex items-center gap-1">
-                            <MapPin className="w-3 h-3" />
-                            <span>{friend.spotsVisited}곳 방문</span>
-                          </div>
-                        </div>
-                        <div className="flex gap-2">
-                          <Link to={`/chat/${friend.id}`} className="flex-1">
-                            <Button size="sm" variant="outline" className="w-full">
-                              💬 메시지
-                            </Button>
-                          </Link>
-                          <Link to={`/profile/${friend.id}`} className="flex-1">
-                            <Button
-    size="sm"
-    className="w-full"
-    style={{ backgroundColor: PP_COLORS.sage, color: "white" }}
-  >
-                              프로필 보기
-                            </Button>
-                          </Link>
-                        </div>
-                      </div>
-                    </div>
-                  </div>)}
+              <div className="lg:hidden">{friendsList}</div>
+              <div className="hidden lg:grid lg:grid-cols-[minmax(0,1fr)_300px] lg:gap-6">
+                <div>{friendsList}</div>
+                {suggestionsPanel}
               </div>
             </TabsContent>
 
@@ -198,94 +274,13 @@ function FriendsPage() {
     /* Friend Requests */
   }
             <TabsContent value="requests">
-              {mockFriendRequests.length === 0 ? <div className="text-center py-12 bg-white rounded-2xl shadow-sm">
-                  <UserPlus className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-                  <h3 className="text-lg font-medium text-gray-900 mb-2">
-                    친구 요청이 없습니다
-                  </h3>
-                  <p className="text-gray-600">
-                    새로운 친구 요청이 오면 여기에 표시됩니다
-                  </p>
-                </div> : <div className="space-y-3">
-                  {mockFriendRequests.map((request) => <div key={request.id} className="bg-white rounded-2xl p-4 shadow-sm">
-                      <div className="flex items-start gap-3">
-                        <Avatar className="w-14 h-14 ring-2 ring-[#D8E983]/30">
-                          <AvatarImage src={request.avatar} />
-                          <AvatarFallback>{request.name[0]}</AvatarFallback>
-                        </Avatar>
-                        <div className="flex-1 min-w-0">
-                          <div className="flex items-center justify-between mb-1">
-                            <h3 className="font-bold text-gray-900">{request.name}</h3>
-                            <span className="text-xs text-gray-500">{request.timestamp}</span>
-                          </div>
-                          <p className="text-sm text-gray-600 mb-2">{request.bio}</p>
-                          <p className="text-xs text-gray-500 mb-3">
-                            친구 {request.mutualFriends}명과 함께 아는 사람
-                          </p>
-                          <div className="flex gap-2">
-                            <Button
-    size="sm"
-    className="flex-1"
-    style={{ backgroundColor: PP_COLORS.sage, color: "white" }}
-  >
-                              <Check className="w-4 h-4 mr-1" />
-                              수락
-                            </Button>
-                            <Button size="sm" variant="outline" className="flex-1">
-                              <X className="w-4 h-4 mr-1" />
-                              거절
-                            </Button>
-                          </div>
-                        </div>
-                      </div>
-                    </div>)}
-                </div>}
-            </TabsContent>
-
-            {
-    /* Friend Suggestions */
-  }
-            <TabsContent value="suggestions">
-              <div className="space-y-3">
-                {mockSuggestions.map((suggestion) => <div key={suggestion.id} className="bg-white rounded-2xl p-4 shadow-sm hover:shadow-md transition-shadow">
-                    <div className="flex items-start gap-3">
-                      <Avatar className="w-14 h-14 ring-2 ring-[#D8E983]/30">
-                        <AvatarImage src={suggestion.avatar} />
-                        <AvatarFallback>{suggestion.name[0]}</AvatarFallback>
-                      </Avatar>
-                      <div className="flex-1 min-w-0">
-                        <h3 className="font-bold text-gray-900 mb-1">{suggestion.name}</h3>
-                        <p className="text-sm text-gray-600 mb-2 line-clamp-1">{suggestion.bio}</p>
-                        <div className="flex items-center gap-2 mb-3">
-                          <Badge
-    variant="secondary"
-    className="text-xs"
-    style={{ backgroundColor: `${PP_COLORS.lime}40`, color: PP_COLORS.olive }}
-  >
-                            {suggestion.reason}
-                          </Badge>
-                          <span className="text-xs text-gray-500">
-                            친구 {suggestion.mutualFriends}명과 함께 아는 사람
-                          </span>
-                        </div>
-                        <div className="flex gap-2">
-                          <Button
-    size="sm"
-    className="flex-1"
-    style={{ backgroundColor: PP_COLORS.sage, color: "white" }}
-  >
-                            <UserPlus className="w-4 h-4 mr-1" />
-                            친구 추가
-                          </Button>
-                          <Button size="sm" variant="outline">
-                            프로필
-                          </Button>
-                        </div>
-                      </div>
-                    </div>
-                  </div>)}
+              <div className="lg:hidden">{requestsList}</div>
+              <div className="hidden lg:grid lg:grid-cols-[minmax(0,1fr)_300px] lg:gap-6">
+                <div>{requestsList}</div>
+                {suggestionsPanel}
               </div>
             </TabsContent>
+
           </Tabs>
         </div>
       </div>

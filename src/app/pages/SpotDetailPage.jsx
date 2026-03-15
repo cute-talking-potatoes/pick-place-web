@@ -31,7 +31,7 @@ function SpotDetailPage() {
       <TopNav title="스팟 상세" showBack />
 
       <div className="pt-14">
-        <div className="max-w-4xl mx-auto">
+        <div className="max-w-7xl mx-auto">
           {
     /* Hero Image */
   }

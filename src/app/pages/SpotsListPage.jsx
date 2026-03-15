@@ -1,4 +1,4 @@
-import { Link, useLocation, useSearchParams } from "react-router";
+import { Link, useSearchParams } from "react-router";
 import { BottomNav } from "../components/BottomNav";
 import { TopNav } from "../components/TopNav";
 import { Badge } from "../components/ui/badge";
@@ -8,11 +8,10 @@ import { MapPin, Star, Bookmark } from "lucide-react";
 import { PP_COLORS } from "../utils/ppStyles";
 import { useState } from "react";
 function SpotsListPage() {
-  const location = useLocation();
   const [searchParams, setSearchParams] = useSearchParams();
   const [selectedTaste, setSelectedTaste] = useState("all");
   const [sortBy, setSortBy] = useState("distance");
-  const activeTab = searchParams.get("tab") || (location.pathname === "/bookmarks" ? "bookmarks" : location.pathname === "/visited" ? "visited" : "all");
+  const activeTab = searchParams.get("tab") || "all";
   const filteredSpots = activeTab === "bookmarks" ? mockSpots.filter((s) => s.isBookmarked) : activeTab === "visited" ? mockSpots.filter((s) => s.isVisited) : mockSpots;
   const sortedSpots = [...filteredSpots].sort((a, b) => {
     if (sortBy === "rating") return b.rating - a.rating;

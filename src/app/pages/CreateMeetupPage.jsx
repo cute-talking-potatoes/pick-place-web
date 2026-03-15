@@ -71,7 +71,7 @@ function CreateMeetupPage() {
       <TopNav title="✨ 새 모임 만들기" showBack />
 
       <div className="pt-14">
-        <form onSubmit={handleSubmit} className="max-w-3xl mx-auto px-4 py-6 space-y-5">
+        <form onSubmit={handleSubmit} className="max-w-7xl mx-auto px-4 py-6 space-y-5">
           <div className="bg-white rounded-2xl shadow-sm p-5 space-y-4">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">모임 제목</label>

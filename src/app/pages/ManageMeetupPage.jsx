@@ -62,15 +62,15 @@ function ManageMeetupPage() {
   };
   const handleDeleteMeetup = () => {
     if (confirm("\uC815\uB9D0 \uC774 \uBAA8\uC784\uC744 \uC0AD\uC81C\uD558\uC2DC\uACA0\uC2B5\uB2C8\uAE4C? \uC774 \uC791\uC5C5\uC740 \uB418\uB3CC\uB9B4 \uC218 \uC5C6\uC2B5\uB2C8\uB2E4.")) {
-      navigate("/my-meetups");
+      navigate("/meetups");
     }
   };
   if (!meetup) {
     return <div className="min-h-screen bg-gray-50 flex items-center justify-center">
         <div className="text-center">
           <p className="text-gray-600 mb-4">모임을 찾을 수 없습니다.</p>
-          <Button onClick={() => navigate("/my-meetups")}>
-            내 모임으로 돌아가기
+          <Button onClick={() => navigate("/meetups")}>
+            모임 목록으로 돌아가기
           </Button>
         </div>
       </div>;
@@ -79,7 +79,7 @@ function ManageMeetupPage() {
       <TopNav title="모임 관리" showBack />
 
       <div className="pt-14">
-        <div className="max-w-4xl mx-auto px-4 py-6">
+        <div className="max-w-7xl mx-auto px-4 py-6">
           {
     /* Meetup Info Card */
   }

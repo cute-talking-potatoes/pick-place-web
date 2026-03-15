@@ -116,7 +116,7 @@ function UploadPage() {
           <TopNav title="📸 게시글 작성" showBack />
 
           <div className="pt-14">
-            <div className="max-w-2xl mx-auto px-4 py-10">
+            <div className="max-w-7xl mx-auto px-4 py-10">
               <div className="bg-white rounded-2xl shadow-sm p-6 text-center">
                 <AlertCircle className="w-10 h-10 text-amber-500 mx-auto mb-3" />
                 <h2 className="text-lg font-bold text-gray-900 mb-2">선택된 스팟 정보가 없어요</h2>
@@ -144,7 +144,7 @@ function UploadPage() {
       <TopNav title="📸 게시글 작성" showBack />
 
       <div className="pt-14">
-        <form onSubmit={handleSubmit} className="max-w-4xl mx-auto px-4 py-6">
+        <form onSubmit={handleSubmit} className="max-w-7xl mx-auto px-4 py-6">
           {
     /* Image Upload */
   }

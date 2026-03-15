@@ -36,7 +36,7 @@ function OnboardingPage() {
     /* Progress */
   }
       <div className="bg-white border-b border-gray-200">
-        <div className="max-w-2xl mx-auto px-4 py-4">
+        <div className="max-w-7xl mx-auto px-4 py-4">
           <div className="flex items-center justify-between mb-2">
             <span className="text-sm text-gray-600">취향 설정</span>
             <span className="text-sm font-medium text-gray-900">{step} / 3</span>
@@ -57,7 +57,7 @@ function OnboardingPage() {
     /* Content */
   }
       <div className="flex-1 flex flex-col items-center justify-center px-4 py-12">
-        <div className="w-full max-w-2xl">
+        <div className="w-full max-w-7xl">
           {step === 1 && <div className="text-center mb-8">
               <h2 className="text-3xl font-bold text-gray-900 mb-3">
                 어떤 배경을 좋아하시나요?
@@ -132,7 +132,7 @@ function OnboardingPage() {
     /* Actions */
   }
       <div className="bg-white border-t border-gray-200 p-4">
-        <div className="max-w-2xl mx-auto flex gap-3">
+        <div className="max-w-7xl mx-auto flex gap-3">
           {step > 1 && <Button
     variant="outline"
     onClick={() => setStep(step - 1)}

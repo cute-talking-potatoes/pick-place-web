@@ -5,14 +5,24 @@ import { MainMapPage } from "./app/pages/MainMapPage";
 import { SpotsListPage } from "./app/pages/SpotsListPage";
 import { SpotDetailPage } from "./app/pages/SpotDetailPage";
 import { CommunityPage } from "./app/pages/CommunityPage";
+import { CommunityNoticesPage } from "./app/pages/CommunityNoticesPage";
+import { CreateQuestionPage } from "./app/pages/CreateQuestionPage";
+import { QuestionDetailPage } from "./app/pages/QuestionDetailPage";
 import { ProfilePage } from "./app/pages/ProfilePage";
 import { ChatPage } from "./app/pages/ChatPage";
 import { UploadPage } from "./app/pages/UploadPage";
 import { PostDetailPage } from "./app/pages/PostDetailPage";
 import { MeetupDetailPage } from "./app/pages/MeetupDetailPage";
 import { SettingsPage } from "./app/pages/SettingsPage";
-import { MyPhotosPage } from "./app/pages/MyPhotosPage";
-import { MyMeetupsPage } from "./app/pages/MyMeeupsPage";
+import { ChangePasswordPage } from "./app/pages/ChangePasswordPage";
+import { PrivacySettingsPage } from "./app/pages/PrivacySettingsPage";
+import { HelpPage } from "./app/pages/HelpPage";
+import { HelpGettingStartedPage } from "./app/pages/HelpGettingStartedPage";
+import { HelpSpotsPage } from "./app/pages/HelpSpotsPage";
+import { HelpMeetupsPage } from "./app/pages/HelpMeetupsPage";
+import { HelpCommunityPage } from "./app/pages/HelpCommunityPage";
+import { ContactPage } from "./app/pages/ContactPage";
+import { PoliciesPage } from "./app/pages/PoliciesPage";
 import { EditProfilePage } from "./app/pages/EditProfilePage";
 import { EditMeetupPage } from "./app/pages/EditMeetupPage";
 import { CreateMeetupPage } from "./app/pages/CreateMeetupPage";
@@ -27,17 +37,26 @@ export const router = createBrowserRouter([
   { path: "/spots", Component: SpotsListPage },
   { path: "/spot/:id", Component: SpotDetailPage },
   { path: "/community", Component: CommunityPage },
+  { path: "/community/notices", Component: CommunityNoticesPage },
+  { path: "/community/questions/new", Component: CreateQuestionPage },
+  { path: "/community/questions/:id", Component: QuestionDetailPage },
   { path: "/post/:id", Component: PostDetailPage },
   { path: "/meetup/:id", Component: MeetupDetailPage },
   { path: "/profile", Component: ProfilePage },
+  { path: "/profile/:id", Component: ProfilePage },
   { path: "/chat", Component: ChatPage },
   { path: "/chat/:id", Component: ChatPage },
   { path: "/upload", Component: UploadPage },
-  { path: "/bookmarks", Component: SpotsListPage },
-  { path: "/visited", Component: SpotsListPage },
   { path: "/settings", Component: SettingsPage },
-  { path: "/my-photos", Component: MyPhotosPage },
-  { path: "/my-meetups", Component: MyMeetupsPage },
+  { path: "/settings/password", Component: ChangePasswordPage },
+  { path: "/settings/privacy", Component: PrivacySettingsPage },
+  { path: "/settings/help", Component: HelpPage },
+  { path: "/settings/help/getting-started", Component: HelpGettingStartedPage },
+  { path: "/settings/help/spots", Component: HelpSpotsPage },
+  { path: "/settings/help/meetups", Component: HelpMeetupsPage },
+  { path: "/settings/help/community", Component: HelpCommunityPage },
+  { path: "/settings/contact", Component: ContactPage },
+  { path: "/settings/policies", Component: PoliciesPage },
   { path: "/profile/edit", Component: EditProfilePage },
   { path: "/meetups/new", Component: CreateMeetupPage },
   { path: "/meetup/:id/edit", Component: EditMeetupPage },
