@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { useParams, Link } from "react-router";
 import { TopNav } from "../components/TopNav";
 import { Button } from "../components/ui/button";
@@ -16,9 +16,26 @@ import {
   AlertCircle
 } from "lucide-react";
 import { PP_COLORS, ppGradientStyle } from "../utils/ppStyles";
+
+const DEFAULT_NOTICE_LINES = [
+  "모임 시간 10분 전까지 도착해주세요",
+  "촬영 장비는 개인이 준비해주세요",
+  "날씨가 좋지 않을 경우 모임이 취소될 수 있습니다",
+  "참여 후 24시간 전까지 취소 가능합니다"
+];
+
 function MeetupDetailPage() {
   const { id } = useParams();
-  const meetup = mockMeetups.find((m) => m.id === id);
+  const meetup = useMemo(() => {
+    const baseMeetup = mockMeetups.find((m) => m.id === id);
+    if (!baseMeetup) return null;
+    try {
+      const editedMeetups = JSON.parse(localStorage.getItem("edited_meetups") || "{}");
+      return editedMeetups[id] || baseMeetup;
+    } catch {
+      return baseMeetup;
+    }
+  }, [id]);
   const [isJoined, setIsJoined] = useState(meetup?.isJoined || false);
   if (!meetup) {
     return <div className="min-h-screen bg-gray-50 flex items-center justify-center">
@@ -35,6 +52,7 @@ function MeetupDetailPage() {
   };
   const isHost = meetup.hostId === "1";
   const isFull = meetup.currentParticipants >= meetup.maxParticipants;
+  const noticeLines = (meetup.noticeText ? meetup.noticeText.split("\n").map((line) => line.trim()).filter(Boolean) : DEFAULT_NOTICE_LINES);
   return <div className="min-h-screen bg-gray-50 pb-6">
       <TopNav showBack />
 
@@ -163,22 +181,10 @@ function MeetupDetailPage() {
             <div className="bg-white rounded-2xl p-6 shadow-sm">
               <h3 className="font-bold text-lg mb-3">⚠️ 안내사항</h3>
               <ul className="space-y-2 text-sm text-gray-700">
-                <li className="flex items-start gap-2">
-                  <span style={{ color: PP_COLORS.sage }}>•</span>
-                  <span>모임 시간 10분 전까지 도착해주세요</span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <span style={{ color: PP_COLORS.sage }}>•</span>
-                  <span>촬영 장비는 개인이 준비해주세요</span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <span style={{ color: PP_COLORS.sage }}>•</span>
-                  <span>날씨가 좋지 않을 경우 모임이 취소될 수 있습니다</span>
-                </li>
-                <li className="flex items-start gap-2">
-                  <span style={{ color: PP_COLORS.sage }}>•</span>
-                  <span>참여 후 24시간 전까지 취소 가능합니다</span>
-                </li>
+                {noticeLines.map((line) => <li key={line} className="flex items-start gap-2">
+                    <span style={{ color: PP_COLORS.sage }}>•</span>
+                    <span>{line}</span>
+                  </li>)}
               </ul>
             </div>
           </div>

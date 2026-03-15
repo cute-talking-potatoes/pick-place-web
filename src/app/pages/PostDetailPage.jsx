@@ -93,7 +93,8 @@ function PostDetailPage() {
           <div className="p-4">
             <div className="mb-4">
               <p className="text-gray-900 leading-relaxed">{post.content}</p>
-              <div className="text-sm text-gray-500 mt-2">{post.timestamp}</div>
+              <div className="text-sm text-gray-500 mt-2">{post.createdAt}</div>
+              {post.visitedDate && <div className="text-sm text-gray-500 mt-1">📅 방문 일자: {post.visitedDate}</div>}
             </div>
 
             {

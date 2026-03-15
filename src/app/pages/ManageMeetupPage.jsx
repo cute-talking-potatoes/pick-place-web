@@ -23,7 +23,16 @@ import { PP_COLORS, ppGradientStyle } from "../utils/ppStyles";
 function ManageMeetupPage() {
   const { id } = useParams();
   const navigate = useNavigate();
-  const meetup = mockMeetups.find((m) => m.id === id);
+  const meetup = useState(() => {
+    const baseMeetup = mockMeetups.find((m) => m.id === id);
+    if (!baseMeetup) return null;
+    try {
+      const editedMeetups = JSON.parse(localStorage.getItem("edited_meetups") || "{}");
+      return editedMeetups[id] || baseMeetup;
+    } catch {
+      return baseMeetup;
+    }
+  })[0];
   const [pendingRequests, setPendingRequests] = useState([
     {
       id: "req1",

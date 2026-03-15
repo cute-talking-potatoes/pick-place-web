@@ -66,6 +66,7 @@ function CommunityPage() {
                           📍 {post.spotName}
                         </Link>
                       </div>
+                      {post.visitedDate && <div className="text-xs text-gray-500 mb-2">📅 방문 일자: {post.visitedDate}</div>}
                       <p className="text-gray-700 leading-relaxed">{post.content}</p>
                     </div>
 

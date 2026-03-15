@@ -14,6 +14,7 @@ import { SettingsPage } from "./app/pages/SettingsPage";
 import { MyPhotosPage } from "./app/pages/MyPhotosPage";
 import { MyMeetupsPage } from "./app/pages/MyMeeupsPage";
 import { EditProfilePage } from "./app/pages/EditProfilePage";
+import { EditMeetupPage } from "./app/pages/EditMeetupPage";
 import { ManageMeetupPage } from "./app/pages/ManageMeetupPage";
 import { MeetupsPage } from "./app/pages/MeetupsPage";
 import { FriendsPage } from "./app/pages/FriendsPage";
@@ -37,6 +38,7 @@ export const router = createBrowserRouter([
   { path: "/my-photos", Component: MyPhotosPage },
   { path: "/my-meetups", Component: MyMeetupsPage },
   { path: "/profile/edit", Component: EditProfilePage },
+  { path: "/meetup/:id/edit", Component: EditMeetupPage },
   { path: "/meetup/:id/manage", Component: ManageMeetupPage },
   { path: "/meetups", Component: MeetupsPage },
   { path: "/friends", Component: FriendsPage },

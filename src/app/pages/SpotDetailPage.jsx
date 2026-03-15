@@ -167,7 +167,7 @@ function SpotDetailPage() {
             <div className="bg-white rounded-2xl p-6 shadow-sm">
               <div className="flex items-center justify-between mb-4">
                 <h3 className="font-bold text-lg">📸 사용자 사진</h3>
-                <Link to="/upload">
+                <Link to={`/upload?source=spot&spotId=${spot.id}`}>
                   <Button size="sm" style={{ backgroundColor: PP_COLORS.sage, color: "white" }}>
                     <Camera className="w-4 h-4 mr-2" />
                     사진 올리기

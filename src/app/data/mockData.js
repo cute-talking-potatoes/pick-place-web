@@ -156,6 +156,7 @@ const mockPosts = [
     comments: 18,
     isLiked: true,
     createdAt: "2\uC2DC\uAC04 \uC804",
+    visitedDate: "2026-03-12",
     tags: ["\uB178\uC744", "\uD55C\uAC15", "\uAC10\uC131", "\uC778\uC0DD\uC0F7"]
   },
   {
@@ -174,6 +175,7 @@ const mockPosts = [
     comments: 42,
     isLiked: false,
     createdAt: "1\uC77C \uC804",
+    visitedDate: "2026-03-10",
     tags: ["\uC77C\uCD9C", "\uC81C\uC8FC", "\uC131\uC0B0\uC77C\uCD9C\uBD09", "\uC5EC\uD589"]
   }
 ];
