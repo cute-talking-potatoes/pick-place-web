@@ -1,46 +1,59 @@
-import { Link } from "react-router";
+import { useRef, useState } from "react";
+import { Link, useNavigate } from "react-router";
 import { BottomNav } from "../components/BottomNav";
 import { TopNav } from "../components/TopNav";
+import { CommunityModeTabs } from "../components/CommunityModeTabs";
 import { Button } from "../components/ui/button";
 import { Badge } from "../components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "../components/ui/avatar";
-import { Tabs, TabsList, TabsTrigger, TabsContent } from "../components/ui/tabs";
-import { mockPosts, mockMeetups } from "../data/mockData";
-import { Plus, Heart, MessageCircle, Bookmark, Share2, MapPin, Calendar, Users } from "lucide-react";
+import { mockPosts } from "../data/mockData";
+import { Plus, Heart, MessageCircle, Bookmark, Share2, MapPin, Calendar, Users, ChevronLeft, ChevronRight } from "lucide-react";
 import { PP_COLORS, ppGradientStyle } from "../utils/ppStyles";
 function CommunityPage() {
+  const navigate = useNavigate();
+  const [imageIndexes, setImageIndexes] = useState({});
+  const touchStartXRef = useRef({});
+  const getImageIndex = (postId, imagesLength) => {
+    if (imagesLength <= 1) return 0;
+    const currentIndex = imageIndexes[postId] || 0;
+    return Math.min(currentIndex, imagesLength - 1);
+  };
+  const goToImage = (postId, nextIndex) => {
+    setImageIndexes((prev) => ({ ...prev, [postId]: nextIndex }));
+  };
+  const moveImage = (postId, imagesLength, direction) => {
+    if (imagesLength <= 1) return;
+    const current = getImageIndex(postId, imagesLength);
+    const next = direction === "next" ? Math.min(current + 1, imagesLength - 1) : Math.max(current - 1, 0);
+    goToImage(postId, next);
+  };
+  const handleCreatePost = () => navigate("/upload");
   return <div className="min-h-screen bg-gray-50 pb-20 lg:pb-4">
       <TopNav title="✨ 커뮤니티" />
 
       <div className="pt-14">
         <div className="max-w-7xl mx-auto px-4 py-6">
-          {
-    /* Tabs */
-  }
-          <Tabs defaultValue="feed">
-            <TabsList className="w-full grid grid-cols-2 bg-white mb-6">
-              <TabsTrigger value="feed">📸 피드</TabsTrigger>
-              <TabsTrigger value="meetups">👥 모임</TabsTrigger>
-            </TabsList>
-
-            {
-    /* Feed Tab */
-  }
-            <TabsContent value="feed">
+          <div className="mb-6">
+            <h1 className="text-2xl font-bold text-gray-900 mb-2">
+              특별한 순간을 공유해보세요! 📸
+            </h1>
+            <p className="text-gray-600">
+              사람들에게 특별한 순간을 공유하세요
+            </p>
+          </div>
+          <CommunityModeTabs activeTab="feed" />
               {
     /* Create Button */
   }
-              <Link to="/upload">
-                <Button className="w-full mb-6" style={ppGradientStyle}>
-                  <Plus className="w-5 h-5 mr-2" />
-                  📸 새 게시글 작성
-                </Button>
-              </Link>
+              <Button className="w-full mb-6" style={ppGradientStyle} onClick={handleCreatePost}>
+                <Plus className="w-5 h-5 mr-2" />
+                📸 새 게시글 작성
+              </Button>
 
               {
     /* Posts */
   }
-              <div className="space-y-6">
+              <div className="space-y-4">
                 {mockPosts.map((post) => <div key={post.id} className="bg-white rounded-2xl shadow-sm overflow-hidden hover:shadow-md transition-shadow">
                     {
     /* Post Header */
@@ -74,20 +87,64 @@ function CommunityPage() {
     /* Post Images */
   }
                     <Link to={`/post/${post.id}`}>
-                      <div className={`grid ${post.images.length === 1 ? "grid-cols-1" : "grid-cols-2"} gap-1`}>
-                        {post.images.slice(0, 4).map((url, index) => <div
-    key={index}
-    className={`relative ${post.images.length === 1 ? "aspect-[4/3]" : "aspect-square"} bg-gray-100 overflow-hidden`}
+                      <div
+    className="relative bg-gray-100 aspect-square overflow-hidden"
+    onTouchStart={(e) => {
+      touchStartXRef.current[post.id] = e.changedTouches[0].clientX;
+    }}
+    onTouchEnd={(e) => {
+      const startX = touchStartXRef.current[post.id];
+      const endX = e.changedTouches[0].clientX;
+      const diff = startX - endX;
+      if (Math.abs(diff) < 30) return;
+      moveImage(post.id, post.images.length, diff > 0 ? "next" : "prev");
+    }}
   >
-                            <img
-    src={url}
+                        <img
+    src={post.images[getImageIndex(post.id, post.images.length)]}
     alt=""
     className="w-full h-full object-cover hover:scale-105 transition-transform"
   />
-                            {index === 3 && post.images.length > 4 && <div className="absolute inset-0 bg-black/60 flex items-center justify-center text-white text-xl font-bold">
-                                +{post.images.length - 4}
-                              </div>}
-                          </div>)}
+                        {post.images.length > 1 && getImageIndex(post.id, post.images.length) > 0 && <button
+      type="button"
+      onClick={(e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        moveImage(post.id, post.images.length, "prev");
+      }}
+      className="absolute left-3 top-1/2 -translate-y-1/2 w-8 h-8 bg-black/45 text-white rounded-full flex items-center justify-center hover:bg-black/60 transition-colors"
+      aria-label="이전 사진"
+    >
+                              <ChevronLeft className="w-4 h-4" />
+                            </button>}
+                        {post.images.length > 1 && getImageIndex(post.id, post.images.length) < post.images.length - 1 && <button
+      type="button"
+      onClick={(e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        moveImage(post.id, post.images.length, "next");
+      }}
+      className="absolute right-3 top-1/2 -translate-y-1/2 w-8 h-8 bg-black/45 text-white rounded-full flex items-center justify-center hover:bg-black/60 transition-colors"
+      aria-label="다음 사진"
+    >
+                              <ChevronRight className="w-4 h-4" />
+                            </button>}
+                        <div className="absolute top-3 right-3 px-2 py-1 rounded-full bg-black/45 text-white text-xs">
+                          {getImageIndex(post.id, post.images.length) + 1}/{post.images.length}
+                        </div>
+                        <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex items-center gap-1.5">
+                          {post.images.map((_, index) => <button
+      key={index}
+      type="button"
+      onClick={(e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        goToImage(post.id, index);
+      }}
+      className={`w-2 h-2 rounded-full transition-colors ${getImageIndex(post.id, post.images.length) === index ? "bg-white" : "bg-white/55"}`}
+      aria-label={`${index + 1}번째 이미지`}
+    />)}
+                        </div>
                       </div>
                     </Link>
 
@@ -138,69 +195,6 @@ function CommunityPage() {
                     </div>
                   </div>)}
               </div>
-            </TabsContent>
-
-            {
-    /* Meetups Tab */
-  }
-            <TabsContent value="meetups">
-              {
-    /* Create Meetup Button */
-  }
-              <Link to="/meetups/new">
-                <Button className="w-full mb-6" style={ppGradientStyle}>
-                  <Plus className="w-5 h-5 mr-2" />
-                  ✨ 새 모임 만들기
-                </Button>
-              </Link>
-
-              {
-    /* View All Link */
-  }
-              <div className="flex items-center justify-between mb-4">
-                <h2 className="font-bold text-xl">최근 모임</h2>
-                <Link to="/meetups">
-                  <Button variant="ghost" size="sm" style={{ color: PP_COLORS.sage }}>
-                    전체보기 →
-                  </Button>
-                </Link>
-              </div>
-
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                {mockMeetups.map((meetup) => <Link key={meetup.id} to={`/meetup/${meetup.id}`}>
-                    <div className="bg-white rounded-2xl p-5 shadow-sm hover:shadow-md transition-all hover:-translate-y-1">
-                      <div className="flex items-start gap-3 mb-3">
-                        <div className="w-12 h-12 rounded-xl flex items-center justify-center text-2xl" style={{ backgroundColor: `${PP_COLORS.lime}40` }}>
-                          📸
-                        </div>
-                        <div className="flex-1">
-                          <h3 className="font-bold text-gray-900 mb-1">
-                            {meetup.title}
-                          </h3>
-                          <div className="flex items-center gap-1 text-sm text-gray-600 mb-2">
-                            <MapPin className="w-3 h-3" />
-                            <span className="line-clamp-1">{meetup.spotName}</span>
-                          </div>
-                        </div>
-                      </div>
-                      <div className="space-y-2 mb-4">
-                        <div className="flex items-center gap-2 text-sm text-gray-600">
-                          <Calendar className="w-4 h-4" style={{ color: PP_COLORS.sage }} />
-                          <span>{meetup.date} {meetup.time}</span>
-                        </div>
-                        <div className="flex items-center gap-2 text-sm text-gray-600">
-                          <Users className="w-4 h-4" style={{ color: PP_COLORS.sage }} />
-                          <span>{meetup.currentParticipants}/{meetup.maxParticipants}명 참여 중</span>
-                        </div>
-                      </div>
-                      <Button size="sm" className="w-full" style={{ backgroundColor: PP_COLORS.sage, color: "white" }}>
-                        {meetup.isJoined ? "\u2728 \uC0C1\uC138 \uBCF4\uAE30" : "\u{1F3AF} \uCC38\uC5EC\uD558\uAE30"}
-                      </Button>
-                    </div>
-                  </Link>)}
-              </div>
-            </TabsContent>
-          </Tabs>
         </div>
       </div>
 

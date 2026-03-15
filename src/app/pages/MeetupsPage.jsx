@@ -1,6 +1,7 @@
 import { Link, useSearchParams } from "react-router";
 import { BottomNav } from "../components/BottomNav";
 import { TopNav } from "../components/TopNav";
+import { CommunityModeTabs } from "../components/CommunityModeTabs";
 import { Button } from "../components/ui/button";
 import { Badge } from "../components/ui/badge";
 import { Input } from "../components/ui/input";
@@ -30,7 +31,7 @@ function MeetupsPage() {
       <TopNav title="👥 촬영 모임" showBack />
 
       <div className="pt-14">
-        <div className="max-w-4xl mx-auto px-4 py-6">
+        <div className="max-w-7xl mx-auto px-4 py-6">
           {
     /* Header */
   }
@@ -42,6 +43,7 @@ function MeetupsPage() {
               같은 관심사를 가진 사람들과 함께 특별한 순간을 기록하세요
             </p>
           </div>
+          <CommunityModeTabs activeTab="meetups" />
 
           {
     /* Search */

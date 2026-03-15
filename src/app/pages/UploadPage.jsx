@@ -5,8 +5,8 @@ import { BottomNav } from "../components/BottomNav";
 import { Button } from "../components/ui/button";
 import { Badge } from "../components/ui/badge";
 import { Input } from "../components/ui/input";
-import { mockPosts, mockSpots } from "../data/mockData";
-import { Upload, MapPin, X, AlertCircle } from "lucide-react";
+import { mockPosts, mockSpots, mockUser } from "../data/mockData";
+import { Upload, MapPin, X, AlertCircle, ChevronLeft, ChevronRight } from "lucide-react";
 import { ppGradientStyle, PP_COLORS } from "../utils/ppStyles";
 const mockImageUrls = [
   "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800",
@@ -30,9 +30,14 @@ function UploadPage() {
   const [selectedSpotId, setSelectedSpotId] = useState(() => editingPost?.spotId || "");
   const [visitedDate, setVisitedDate] = useState(() => searchParams.get("visitedDate") || editingPost?.visitedDate || today);
   const [content, setContent] = useState(() => editingPost?.content || "");
-  const [selectedTags, setSelectedTags] = useState(() => editingPost?.tags || []);
+  const preferenceTags = useMemo(() => mockUser.preferences || [], []);
+  const defaultTags = useMemo(() => ["일출", "일몰", "야경", "자연", "도시", "감성", "인물", "건축"], []);
+  const knownTags = useMemo(() => [...new Set([...preferenceTags, ...defaultTags])], [preferenceTags, defaultTags]);
+  const [selectedTags, setSelectedTags] = useState(() => Array.from(new Set(editingPost?.tags || [])));
+  const [customTags, setCustomTags] = useState(() => (editingPost?.tags || []).filter((tag) => !knownTags.includes(tag)));
+  const [customTagInput, setCustomTagInput] = useState("");
+  const [previewIndex, setPreviewIndex] = useState(0);
   const [errors, setErrors] = useState({});
-  const popularTags = ["\uC77C\uCD9C", "\uC77C\uBAB0", "\uC57C\uACBD", "\uC790\uC5F0", "\uB3C4\uC2DC", "\uAC10\uC131", "\uC778\uBB3C", "\uAC74\uCD95"];
 
   const lockedSpot = useMemo(() => {
     if (!isSpotUploadFlow || !spotIdFromQuery) return null;
@@ -63,7 +68,7 @@ function UploadPage() {
       visitedDate,
       content: content.trim(),
       images: selectedImages,
-      tags: selectedTags,
+      tags: Array.from(new Set(selectedTags)),
       createdAt: new Date().toISOString()
     };
 
@@ -73,12 +78,37 @@ function UploadPage() {
     navigate("/community");
   };
   const toggleTag = (tag) => {
-    if (selectedTags.includes(tag)) {
-      setSelectedTags(selectedTags.filter((t) => t !== tag));
-    } else {
-      setSelectedTags([...selectedTags, tag]);
-    }
+    setSelectedTags((prevTags) => prevTags.includes(tag) ? prevTags.filter((t) => t !== tag) : [...prevTags, tag]);
   };
+  const addCustomTag = () => {
+    const nextTag = customTagInput.trim().replace(/^#/, "");
+    if (!nextTag) {
+      setErrors((prev) => ({ ...prev, tags: "태그를 입력한 뒤 추가해주세요." }));
+      return;
+    }
+    if (selectedTags.some((tag) => tag.toLowerCase() === nextTag.toLowerCase())) {
+      setErrors((prev) => ({ ...prev, tags: "이미 추가된 태그입니다." }));
+      return;
+    }
+    setSelectedTags((prevTags) => [...prevTags, nextTag]);
+    if (!knownTags.some((tag) => tag.toLowerCase() === nextTag.toLowerCase())) {
+      setCustomTags((prevTags) => [...prevTags, nextTag]);
+    }
+    setCustomTagInput("");
+    setErrors((prev) => ({ ...prev, tags: "" }));
+  };
+  const removeTag = (tagToRemove) => {
+    setSelectedTags((prevTags) => prevTags.filter((tag) => tag !== tagToRemove));
+    setCustomTags((prevTags) => prevTags.filter((tag) => tag !== tagToRemove));
+  };
+  const removeImage = (removeIndex) => {
+    setSelectedImages((prevImages) => {
+      const nextImages = prevImages.filter((_, index) => index !== removeIndex);
+      setPreviewIndex((prev) => Math.min(prev, Math.max(0, nextImages.length - 1)));
+      return nextImages;
+    });
+  };
+  const safePreviewIndex = selectedImages.length > 0 ? Math.min(previewIndex, selectedImages.length - 1) : 0;
 
   if (isSpotUploadFlow) {
     if (isInvalidSpotFlow) {
@@ -122,48 +152,84 @@ function UploadPage() {
             <label className="block text-sm font-medium text-gray-700 mb-3">
               사진 추가 ✨
             </label>
-            {selectedImages.length === 0 ? <button
-    type="button"
-    onClick={() => setSelectedImages(mockImageUrls)}
-    className="w-full aspect-[4/3] border-2 border-dashed border-gray-300 rounded-2xl flex flex-col items-center justify-center transition-colors"
-    style={{
-      borderColor: PP_COLORS.sage + "80",
-      backgroundColor: `${PP_COLORS.cream}40`
-    }}
-    onMouseEnter={(e) => {
-      e.currentTarget.style.borderColor = PP_COLORS.sage;
-      e.currentTarget.style.backgroundColor = `${PP_COLORS.lime}20`;
-    }}
-    onMouseLeave={(e) => {
-      e.currentTarget.style.borderColor = PP_COLORS.sage + "80";
-      e.currentTarget.style.backgroundColor = `${PP_COLORS.cream}40`;
-    }}
-  >
-                <Upload className="w-12 h-12 text-gray-400 mb-2" />
-                <span className="text-gray-600 font-medium">📷 사진 업로드</span>
-                <span className="text-sm text-gray-500 mt-1">
-                  최대 10장까지 선택할 수 있어요
-                </span>
-              </button> : <>
-                <div className={`grid ${selectedImages.length === 1 ? "grid-cols-1" : "grid-cols-2"} gap-1 rounded-xl overflow-hidden`}>
-                  {selectedImages.map((url, index) => <div
-    key={index}
-    className={`relative bg-gray-100 overflow-hidden ${selectedImages.length === 1 ? "aspect-[4/3]" : "aspect-square"}`}
-  >
-                    <img
-    src={url}
-    alt=""
-    className="w-full h-full object-cover"
-  />
-                    <button
-    type="button"
-    onClick={() => setSelectedImages(selectedImages.filter((_, i) => i !== index))}
-    className="absolute top-2 right-2 w-6 h-6 bg-black/60 text-white rounded-full flex items-center justify-center hover:bg-black/80 transition-colors"
-  >
-                      <X className="w-4 h-4" />
-                    </button>
-                  </div>)}
-                </div>
+            <div className="w-full aspect-[4/3] rounded-2xl overflow-hidden border-2 border-dashed" style={{
+            borderColor: PP_COLORS.sage + "80",
+            backgroundColor: `${PP_COLORS.cream}40`
+          }}>
+              {selectedImages.length === 0 ? <button
+      type="button"
+      onClick={() => setSelectedImages(mockImageUrls)}
+      className="w-full h-full flex flex-col items-center justify-center transition-colors"
+      onMouseEnter={(e) => {
+        e.currentTarget.style.backgroundColor = `${PP_COLORS.lime}20`;
+      }}
+      onMouseLeave={(e) => {
+        e.currentTarget.style.backgroundColor = "transparent";
+      }}
+    >
+                  <Upload className="w-12 h-12 text-gray-400 mb-2" />
+                  <span className="text-gray-600 font-medium">📷 사진 업로드</span>
+                  <span className="text-sm text-gray-500 mt-1">
+                    최대 10장까지 선택할 수 있어요
+                  </span>
+                </button> : selectedImages.length >= 2 ? <div className="h-full relative p-1">
+                    <div className="relative h-full rounded-lg overflow-hidden bg-gray-100">
+                      <img
+      src={selectedImages[safePreviewIndex]}
+      alt=""
+      className="w-full h-full object-cover"
+    />
+                      <button
+      type="button"
+      onClick={() => removeImage(safePreviewIndex)}
+      className="absolute top-2 right-2 w-6 h-6 bg-black/60 text-white rounded-full flex items-center justify-center hover:bg-black/80 transition-colors"
+    >
+                        <X className="w-4 h-4" />
+                      </button>
+                      <button
+      type="button"
+      onClick={() => setPreviewIndex((prev) => prev === 0 ? selectedImages.length - 1 : prev - 1)}
+      className="absolute top-1/2 left-2 -translate-y-1/2 w-8 h-8 bg-black/50 text-white rounded-full flex items-center justify-center hover:bg-black/70 transition-colors"
+      aria-label="이전 사진"
+    >
+                        <ChevronLeft className="w-4 h-4" />
+                      </button>
+                      <button
+      type="button"
+      onClick={() => setPreviewIndex((prev) => prev === selectedImages.length - 1 ? 0 : prev + 1)}
+      className="absolute top-1/2 right-2 -translate-y-1/2 w-8 h-8 bg-black/50 text-white rounded-full flex items-center justify-center hover:bg-black/70 transition-colors"
+      aria-label="다음 사진"
+    >
+                        <ChevronRight className="w-4 h-4" />
+                      </button>
+                      <div className="absolute bottom-2 left-1/2 -translate-x-1/2 flex items-center gap-1.5">
+                        {selectedImages.map((_, index) => <button
+      key={index}
+      type="button"
+      onClick={() => setPreviewIndex(index)}
+      className={`w-2 h-2 rounded-full ${safePreviewIndex === index ? "bg-white" : "bg-white/50"}`}
+      aria-label={`${index + 1}번 사진 보기`}
+    />)}
+                      </div>
+                    </div>
+                  </div> : <div className="h-full relative p-1">
+                    <div className="relative h-full rounded-lg overflow-hidden bg-gray-100">
+                      <img
+      src={selectedImages[0]}
+      alt=""
+      className="w-full h-full object-cover"
+    />
+                      <button
+      type="button"
+      onClick={() => removeImage(0)}
+      className="absolute top-2 right-2 w-6 h-6 bg-black/60 text-white rounded-full flex items-center justify-center hover:bg-black/80 transition-colors"
+    >
+                        <X className="w-4 h-4" />
+                      </button>
+                    </div>
+                  </div>}
+            </div>
+            {selectedImages.length > 0 && <>
                 {selectedImages.length < 10 && <Button
     type="button"
     variant="outline"
@@ -256,8 +322,31 @@ function UploadPage() {
             <label className="block text-sm font-medium text-gray-700 mb-3">
               🏷️ 태그 선택
             </label>
-            <div className="flex flex-wrap gap-2">
-              {popularTags.map((tag) => <Badge
+            <p className="text-xs text-gray-500 mb-3">내 취향 태그를 먼저 선택하고, 필요한 태그는 직접 추가할 수 있어요.</p>
+            <div className="mb-3">
+              <p className="text-xs font-medium text-gray-600 mb-2">내 취향 태그</p>
+              <div className="flex flex-wrap gap-2">
+                {preferenceTags.map((tag) => <Badge
+      key={tag}
+      variant={selectedTags.includes(tag) ? "default" : "outline"}
+      className="cursor-pointer transition-all"
+      style={selectedTags.includes(tag) ? {
+        backgroundColor: PP_COLORS.sage,
+        color: "white"
+      } : {}}
+      onClick={() => {
+        toggleTag(tag);
+        if (errors.tags) setErrors({ ...errors, tags: "" });
+      }}
+    >
+                    #{tag}
+                  </Badge>)}
+              </div>
+            </div>
+            <div className="mb-4">
+              <p className="text-xs font-medium text-gray-600 mb-2">추천 태그</p>
+              <div className="flex flex-wrap gap-2">
+                {defaultTags.filter((tag) => !preferenceTags.includes(tag)).map((tag) => <Badge
     key={tag}
     variant={selectedTags.includes(tag) ? "default" : "outline"}
     className="cursor-pointer transition-all"
@@ -265,11 +354,50 @@ function UploadPage() {
       backgroundColor: PP_COLORS.sage,
       color: "white"
     } : {}}
-    onClick={() => toggleTag(tag)}
+    onClick={() => {
+      toggleTag(tag);
+      if (errors.tags) setErrors({ ...errors, tags: "" });
+    }}
   >
                   #{tag}
                 </Badge>)}
+              </div>
             </div>
+            <div className="flex gap-2 mb-3">
+              <Input
+    value={customTagInput}
+    onChange={(e) => {
+      setCustomTagInput(e.target.value);
+      if (errors.tags) setErrors({ ...errors, tags: "" });
+    }}
+    placeholder="새 태그 입력 후 추가 (예: 필름감성)"
+    onKeyDown={(e) => {
+      if (e.key === "Enter") {
+        e.preventDefault();
+        addCustomTag();
+      }
+    }}
+  />
+              <Button type="button" variant="outline" onClick={addCustomTag}>추가</Button>
+            </div>
+            {selectedTags.length > 0 && <div>
+                <p className="text-xs font-medium text-gray-600 mb-2">선택된 태그</p>
+                <div className="flex flex-wrap gap-2">
+                  {selectedTags.map((tag) => <Badge key={tag} className="text-white" style={{ backgroundColor: PP_COLORS.sage }}>
+                      #{tag}
+                      <button
+      type="button"
+      className="ml-1.5 inline-flex"
+      onClick={() => removeTag(tag)}
+      aria-label={`${tag} 태그 제거`}
+    >
+                        <X className="w-3 h-3" />
+                      </button>
+                    </Badge>)}
+                </div>
+              </div>}
+            {customTags.length > 0 && <p className="text-xs text-gray-500 mt-2">직접 추가한 태그 {customTags.length}개가 포함되어 있어요.</p>}
+            {errors.tags && <p className="text-xs text-red-500 mt-2">{errors.tags}</p>}
           </div>
 
           {
