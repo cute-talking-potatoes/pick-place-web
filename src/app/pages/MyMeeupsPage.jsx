@@ -34,10 +34,12 @@ function MyMeetupsPage() {
           {
     /* Create Button */
   }
-          <Button className="w-full mb-6" style={ppGradientStyle}>
-            <Plus className="w-5 h-5 mr-2" />
-            ✨ 새 모임 만들기
-          </Button>
+          <Link to="/meetups/new">
+            <Button className="w-full mb-6" style={ppGradientStyle}>
+              <Plus className="w-5 h-5 mr-2" />
+              ✨ 새 모임 만들기
+            </Button>
+          </Link>
 
           {
     /* Tabs */
@@ -148,10 +150,12 @@ function MyMeetupsPage() {
                   <p className="text-gray-600 mb-4">
                     직접 모임을 만들어보세요
                   </p>
-                  <Button style={{ backgroundColor: PP_COLORS.sage, color: "white" }}>
-                    <Plus className="w-4 h-4 mr-2" />
-                    ✨ 모임 만들기
-                  </Button>
+                  <Link to="/meetups/new">
+                    <Button style={{ backgroundColor: PP_COLORS.sage, color: "white" }}>
+                      <Plus className="w-4 h-4 mr-2" />
+                      ✨ 모임 만들기
+                    </Button>
+                  </Link>
                 </div> : <div className="space-y-4">
                   {hostedMeetups.map((meetup) => <Link key={meetup.id} to={`/meetup/${meetup.id}`}>
                       <div className="bg-white rounded-2xl shadow-sm overflow-hidden hover:shadow-md transition-shadow">

@@ -147,10 +147,12 @@ function CommunityPage() {
               {
     /* Create Meetup Button */
   }
-              <Button className="w-full mb-6" style={ppGradientStyle}>
-                <Plus className="w-5 h-5 mr-2" />
-                ✨ 새 모임 만들기
-              </Button>
+              <Link to="/meetups/new">
+                <Button className="w-full mb-6" style={ppGradientStyle}>
+                  <Plus className="w-5 h-5 mr-2" />
+                  ✨ 새 모임 만들기
+                </Button>
+              </Link>
 
               {
     /* View All Link */

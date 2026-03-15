@@ -8,15 +8,24 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from "../components/ui/tabs"
 import { mockMeetups } from "../data/mockData";
 import { Plus, MapPin, Calendar, Users, Clock, Search } from "lucide-react";
 import { PP_COLORS, ppGradientStyle } from "../utils/ppStyles";
+import { useMemo } from "react";
 function MeetupsPage() {
   const [searchParams, setSearchParams] = useSearchParams();
+  const storedMeetups = useMemo(() => {
+    try {
+      return JSON.parse(localStorage.getItem("created_meetups") || "[]");
+    } catch {
+      return [];
+    }
+  }, []);
+  const allMeetups = useMemo(() => [...storedMeetups, ...mockMeetups], [storedMeetups]);
   const activeTab = searchParams.get("tab") || "all";
   const handleTabChange = (value) => {
     const nextParams = new URLSearchParams(searchParams);
     nextParams.set("tab", value);
     setSearchParams(nextParams, { replace: true });
   };
-  const filteredMeetups = activeTab === "joined" ? mockMeetups.filter((m) => m.isJoined) : mockMeetups;
+  const filteredMeetups = activeTab === "joined" ? allMeetups.filter((m) => m.isJoined) : allMeetups;
   return <div className="min-h-screen bg-gray-50 pb-20 lg:pb-4">
       <TopNav title="👥 촬영 모임" showBack />
 
@@ -48,10 +57,12 @@ function MeetupsPage() {
           {
     /* Create Button */
   }
-          <Button className="w-full mb-6" style={ppGradientStyle}>
-            <Plus className="w-5 h-5 mr-2" />
-            ✨ 새 모임 만들기
-          </Button>
+          <Link to="/meetups/new">
+            <Button className="w-full mb-6" style={ppGradientStyle}>
+              <Plus className="w-5 h-5 mr-2" />
+              ✨ 새 모임 만들기
+            </Button>
+          </Link>
 
           {
     /* Tabs */
@@ -60,13 +71,13 @@ function MeetupsPage() {
             <TabsList className="w-full grid grid-cols-2 bg-white p-1 h-auto gap-1">
               <TabsTrigger value="all" className="h-auto py-3 flex flex-col gap-1 data-[state=active]:shadow-sm">
                 <span className="text-xl font-bold" style={{ color: PP_COLORS.sage }}>
-                  {mockMeetups.length}
+                  {allMeetups.length}
                 </span>
                 <span className="text-xs text-gray-600">전체 모임</span>
               </TabsTrigger>
               <TabsTrigger value="joined" className="h-auto py-3 flex flex-col gap-1 data-[state=active]:shadow-sm">
                 <span className="text-xl font-bold" style={{ color: PP_COLORS.olive }}>
-                  {mockMeetups.filter((m) => m.isJoined).length}
+                  {allMeetups.filter((m) => m.isJoined).length}
                 </span>
                 <span className="text-xs text-gray-600">참여 중</span>
               </TabsTrigger>
@@ -77,7 +88,14 @@ function MeetupsPage() {
     /* Meetups List */
   }
           <div className="space-y-4">
-            {filteredMeetups.map((meetup) => <Link key={meetup.id} to={`/meetup/${meetup.id}`}>
+            {filteredMeetups.length === 0 ? <div className="bg-white rounded-2xl shadow-sm p-10 text-center">
+                <Users className="w-12 h-12 text-gray-300 mx-auto mb-3" />
+                <h3 className="text-lg font-bold text-gray-900 mb-1">표시할 모임이 없습니다</h3>
+                <p className="text-sm text-gray-600 mb-4">첫 모임을 직접 만들어보세요.</p>
+                <Link to="/meetups/new">
+                  <Button style={ppGradientStyle}>✨ 새 모임 만들기</Button>
+                </Link>
+              </div> : filteredMeetups.map((meetup) => <Link key={meetup.id} to={`/meetup/${meetup.id}`}>
                 <div className="bg-white rounded-2xl shadow-sm overflow-hidden hover:shadow-md transition-all hover:-translate-y-1">
                   {
     /* Image */
