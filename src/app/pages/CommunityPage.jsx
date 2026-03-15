@@ -13,7 +13,7 @@ function CommunityPage() {
       <TopNav title="✨ 커뮤니티" />
 
       <div className="pt-14">
-        <div className="max-w-4xl mx-auto px-4 py-6">
+        <div className="max-w-7xl mx-auto px-4 py-6">
           {
     /* Tabs */
   }
